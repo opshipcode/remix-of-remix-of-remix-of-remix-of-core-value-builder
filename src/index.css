@@ -2,17 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Brand display font for the LOGO TEXT only */
+@font-face {
+  font-family: "Jumping Chick";
+  src: url("/fonts/Jumping_Chick.otf") format("opentype"),
+       url("/fonts/Jumping_Chick.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* =========================================================
-   KitPager Design System
-   Premium, Apple-like, calm, editorial.
-   All colors are HSL. Use semantic tokens — never raw colors.
+   KitPager Design System — Dark default, electric purple brand
    ========================================================= */
 
 @layer base {
   :root {
-    /* Brand: deep desaturated teal on warm neutrals */
-    --background: 42 25% 97%;            /* warm off-white */
-    --foreground: 30 12% 14%;            /* charcoal w/ warm undertone */
+    --background: 42 25% 97%;
+    --foreground: 30 12% 14%;
 
     --surface: 40 22% 96%;
     --surface-2: 38 18% 93%;
@@ -24,11 +31,11 @@
     --popover: 40 22% 98%;
     --popover-foreground: 30 12% 14%;
 
-    --primary: 187 41% 35%;              /* deep teal */
-    --primary-hover: 188 50% 28%;
-    --primary-active: 189 60% 22%;
-    --primary-foreground: 42 30% 98%;
-    --primary-highlight: 186 30% 92%;
+    --primary: 262 100% 65%;
+    --primary-hover: 262 90% 55%;
+    --primary-active: 262 85% 44%;
+    --primary-foreground: 0 0% 100%;
+    --primary-highlight: 262 100% 95%;
 
     --secondary: 38 18% 93%;
     --secondary-foreground: 30 12% 14%;
@@ -36,21 +43,21 @@
     --muted: 38 14% 90%;
     --muted-foreground: 30 8% 42%;
 
-    --accent: 186 30% 92%;
-    --accent-foreground: 187 41% 28%;
+    --accent: 262 100% 95%;
+    --accent-foreground: 262 85% 44%;
 
-    --destructive: 358 55% 48%;          /* restrained berry-red */
+    --destructive: 358 55% 48%;
     --destructive-foreground: 42 30% 98%;
 
-    --success: 152 32% 38%;              /* muted green */
+    --success: 152 32% 38%;
     --success-foreground: 42 30% 98%;
 
-    --warning: 30 55% 42%;               /* amber-brown */
+    --warning: 30 55% 42%;
     --warning-foreground: 42 30% 98%;
 
     --border: 32 12% 84%;
     --input: 32 12% 84%;
-    --ring: 187 41% 35%;
+    --ring: 262 100% 65%;
 
     --text-faint: 30 6% 70%;
 
@@ -61,167 +68,140 @@
     --shadow-sm: 0 1px 2px hsl(30 12% 14% / 0.04);
     --shadow-md: 0 6px 18px -6px hsl(30 12% 14% / 0.08), 0 2px 6px -2px hsl(30 12% 14% / 0.04);
     --shadow-lg: 0 24px 48px -16px hsl(30 12% 14% / 0.14), 0 4px 12px -4px hsl(30 12% 14% / 0.06);
-    --shadow-glow: 0 0 0 1px hsl(187 41% 35% / 0.08), 0 12px 36px -10px hsl(187 41% 35% / 0.18);
+    --shadow-glow: 0 0 0 1px hsl(262 100% 65% / 0.08), 0 12px 36px -10px hsl(262 100% 65% / 0.18);
 
-    --gradient-hero: radial-gradient(
-        80% 60% at 50% 0%,
-        hsl(186 30% 92% / 0.7) 0%,
-        hsl(42 25% 97% / 0) 70%
-      ),
+    --gradient-hero: radial-gradient(80% 60% at 50% 0%, hsl(262 100% 95% / 0.5) 0%, hsl(42 25% 97% / 0) 70%),
       linear-gradient(180deg, hsl(42 25% 97%) 0%, hsl(40 22% 96%) 100%);
-    --gradient-primary: linear-gradient(135deg, hsl(187 41% 35%) 0%, hsl(189 60% 22%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(262 100% 65%) 0%, hsl(262 85% 44%) 100%);
 
-    /* Sidebar */
     --sidebar-background: 40 22% 96%;
     --sidebar-foreground: 30 12% 18%;
-    --sidebar-primary: 187 41% 35%;
-    --sidebar-primary-foreground: 42 30% 98%;
+    --sidebar-primary: 262 100% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 38 18% 92%;
-    --sidebar-accent-foreground: 187 41% 28%;
+    --sidebar-accent-foreground: 262 85% 44%;
     --sidebar-border: 32 12% 86%;
-    --sidebar-ring: 187 41% 35%;
+    --sidebar-ring: 262 100% 65%;
   }
 
   .dark {
-    --background: 30 8% 8%;              /* charcoal-black, slight warmth */
-    --foreground: 38 12% 88%;
+    --background: 260 12% 6%;
+    --foreground: 270 14% 92%;
 
-    --surface: 30 8% 11%;
-    --surface-2: 30 7% 14%;
-    --surface-offset: 30 6% 17%;
+    --surface: 260 12% 9%;
+    --surface-2: 260 10% 13%;
+    --surface-offset: 260 9% 17%;
 
-    --card: 30 8% 11%;
-    --card-foreground: 38 12% 88%;
+    --card: 260 12% 9%;
+    --card-foreground: 270 14% 92%;
 
-    --popover: 30 8% 11%;
-    --popover-foreground: 38 12% 88%;
+    --popover: 260 12% 10%;
+    --popover-foreground: 270 14% 92%;
 
-    --primary: 187 38% 52%;
-    --primary-hover: 187 50% 42%;
-    --primary-active: 188 60% 34%;
-    --primary-foreground: 30 12% 8%;
-    --primary-highlight: 187 28% 22%;
+    --primary: 262 100% 72%;
+    --primary-hover: 262 90% 62%;
+    --primary-active: 262 85% 52%;
+    --primary-foreground: 0 0% 100%;
+    --primary-highlight: 262 60% 18%;
 
-    --secondary: 30 7% 16%;
-    --secondary-foreground: 38 12% 88%;
+    --secondary: 260 10% 14%;
+    --secondary-foreground: 270 14% 92%;
 
-    --muted: 30 6% 18%;
-    --muted-foreground: 30 6% 60%;
+    --muted: 260 8% 16%;
+    --muted-foreground: 265 6% 62%;
 
-    --accent: 187 28% 22%;
-    --accent-foreground: 187 38% 78%;
+    --accent: 262 60% 20%;
+    --accent-foreground: 262 100% 88%;
 
-    --destructive: 358 50% 52%;
-    --destructive-foreground: 38 12% 95%;
+    --destructive: 358 60% 58%;
+    --destructive-foreground: 0 0% 100%;
 
-    --success: 152 28% 48%;
-    --success-foreground: 30 12% 8%;
+    --success: 152 38% 52%;
+    --success-foreground: 0 0% 100%;
 
-    --warning: 30 55% 55%;
-    --warning-foreground: 30 12% 8%;
+    --warning: 35 80% 60%;
+    --warning-foreground: 260 12% 6%;
 
-    --border: 30 6% 20%;
-    --input: 30 6% 20%;
-    --ring: 187 38% 52%;
+    --border: 260 8% 18%;
+    --input: 260 8% 18%;
+    --ring: 262 100% 72%;
 
-    --text-faint: 30 5% 35%;
+    --text-faint: 260 5% 32%;
 
-    --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.4);
-    --shadow-md: 0 6px 18px -6px hsl(0 0% 0% / 0.5), 0 2px 6px -2px hsl(0 0% 0% / 0.35);
-    --shadow-lg: 0 24px 48px -16px hsl(0 0% 0% / 0.65), 0 4px 12px -4px hsl(0 0% 0% / 0.4);
-    --shadow-glow: 0 0 0 1px hsl(187 38% 52% / 0.16), 0 12px 36px -10px hsl(187 38% 52% / 0.28);
+    --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.5);
+    --shadow-md: 0 6px 18px -6px hsl(0 0% 0% / 0.55), 0 2px 6px -2px hsl(0 0% 0% / 0.4);
+    --shadow-lg: 0 24px 48px -16px hsl(0 0% 0% / 0.7), 0 4px 12px -4px hsl(0 0% 0% / 0.45);
+    --shadow-glow: 0 0 0 1px hsl(262 100% 72% / 0.18), 0 12px 36px -10px hsl(262 100% 72% / 0.35);
 
-    --gradient-hero: radial-gradient(
-        80% 60% at 50% 0%,
-        hsl(187 28% 22% / 0.6) 0%,
-        hsl(30 8% 8% / 0) 70%
-      ),
-      linear-gradient(180deg, hsl(30 8% 8%) 0%, hsl(30 8% 11%) 100%);
-    --gradient-primary: linear-gradient(135deg, hsl(187 38% 52%) 0%, hsl(188 60% 34%) 100%);
+    --gradient-hero: radial-gradient(80% 60% at 50% 0%, hsl(262 100% 72% / 0.18) 0%, hsl(260 12% 6% / 0) 70%),
+      linear-gradient(180deg, hsl(260 12% 6%) 0%, hsl(260 12% 8%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(262 100% 72%) 0%, hsl(262 85% 52%) 100%);
 
-    --sidebar-background: 30 8% 9%;
-    --sidebar-foreground: 38 12% 82%;
-    --sidebar-primary: 187 38% 52%;
-    --sidebar-primary-foreground: 30 12% 8%;
-    --sidebar-accent: 30 7% 15%;
-    --sidebar-accent-foreground: 187 38% 78%;
-    --sidebar-border: 30 6% 18%;
-    --sidebar-ring: 187 38% 52%;
+    --sidebar-background: 260 12% 7%;
+    --sidebar-foreground: 270 14% 88%;
+    --sidebar-primary: 262 100% 72%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 260 10% 14%;
+    --sidebar-accent-foreground: 262 100% 88%;
+    --sidebar-border: 260 8% 16%;
+    --sidebar-ring: 262 100% 72%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
+  * { @apply border-border; }
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
-
   body {
     @apply bg-background text-foreground font-sans;
     font-feature-settings: "ss01", "cv11";
   }
-
   ::selection {
-    background: hsl(var(--primary) / 0.18);
+    background: hsl(var(--primary) / 0.3);
     color: hsl(var(--foreground));
   }
-
-  /* Hide scrollbar (utility) */
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { scrollbar-width: none; }
 }
 
-/* =========================================================
-   Component primitives
-   ========================================================= */
-
 @layer components {
-  .kp-container {
-    @apply mx-auto w-full max-w-7xl px-6 md:px-10;
-  }
-
+  .kp-container { @apply mx-auto w-full max-w-7xl px-6 md:px-10; }
   .kp-eyebrow {
     @apply inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface px-3 py-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground;
   }
-
   .kp-display {
     font-family: "Basteleur", "Fraunces", Georgia, serif;
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.02;
   }
-
   .kp-mono {
     font-family: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
     font-feature-settings: "ss02";
   }
-
-  /* Glass surfaces — used sparingly */
+  .kp-brand {
+    font-family: "Jumping Chick", "Basteleur", "Fraunces", Georgia, serif;
+    letter-spacing: 0.01em;
+  }
   .kp-glass {
     background: hsl(var(--surface) / 0.72);
     backdrop-filter: saturate(140%) blur(14px);
     -webkit-backdrop-filter: saturate(140%) blur(14px);
     border: 1px solid hsl(var(--border) / 0.7);
   }
-
   .kp-glass-strong {
     background: hsl(var(--surface) / 0.86);
     backdrop-filter: saturate(160%) blur(20px);
     -webkit-backdrop-filter: saturate(160%) blur(20px);
     border: 1px solid hsl(var(--border));
   }
-
-  /* Surfaces */
   .kp-card {
     @apply rounded-2xl border border-border bg-card;
     box-shadow: var(--shadow-sm);
   }
-
   .kp-card-hover {
     transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1),
       box-shadow 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -230,64 +210,35 @@
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
   }
-
-  /* Skeleton shimmer */
   .kp-skeleton {
-    background: linear-gradient(
-      90deg,
-      hsl(var(--surface-2)) 0%,
-      hsl(var(--surface-offset)) 50%,
-      hsl(var(--surface-2)) 100%
-    );
+    background: linear-gradient(90deg, hsl(var(--surface-2)) 0%, hsl(var(--surface-offset)) 50%, hsl(var(--surface-2)) 100%);
     background-size: 200% 100%;
     animation: kp-shimmer 1.6s ease-in-out infinite;
     border-radius: var(--radius-sm);
   }
-
   @keyframes kp-shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
-
-  /* Footer brand signature */
   .kp-footer-signature {
-    font-family: "Basteleur", "Fraunces", Georgia, serif;
-    font-weight: 700;
-    font-size: clamp(5rem, 18vw, 18rem);
+    font-family: "Jumping Chick", "Basteleur", "Fraunces", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(5rem, 22vw, 22rem);
     line-height: 0.85;
-    letter-spacing: -0.04em;
+    letter-spacing: -0.02em;
     color: transparent;
-    -webkit-text-stroke: 1px hsl(var(--foreground) / 0.18);
-    background: linear-gradient(
-      180deg,
-      hsl(var(--foreground) / 0.10) 0%,
-      hsl(var(--foreground) / 0.02) 100%
-    );
+    -webkit-text-stroke: 1px hsl(var(--foreground) / 0.16);
+    background: linear-gradient(180deg, hsl(var(--foreground) / 0.10) 0%, hsl(var(--foreground) / 0.02) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     user-select: none;
     pointer-events: none;
   }
-
-  /* Bento grid helper */
-  .kp-bento {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 1rem;
-  }
-
-  /* Soft divider */
+  .kp-bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1rem; }
   .kp-divider {
     height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      hsl(var(--border)) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(90deg, transparent 0%, hsl(var(--border)) 50%, transparent 100%);
   }
-
-  /* Image placeholder block (used wherever a brand image will be generated) */
   .kp-image-placeholder {
     @apply relative overflow-hidden rounded-2xl border border-dashed border-border bg-surface-2 text-muted-foreground;
     background-image:
@@ -301,7 +252,6 @@
   }
 }
 
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

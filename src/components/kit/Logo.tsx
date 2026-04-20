@@ -1,19 +1,22 @@
 /**
- * KitPager wordmark — never use emojis. Pure type lockup.
+ * KitPager wordmark — uses the brand font "Jumping Chick".
  */
 export function Logo({
   className = "",
   variant = "default",
+  size = "md",
 }: {
   className?: string;
   variant?: "default" | "mono";
+  size?: "sm" | "md" | "lg";
 }) {
+  const sizes = { sm: "text-xl", md: "text-2xl", lg: "text-3xl" } as const;
   return (
     <span
-      className={`kp-display inline-flex items-baseline gap-[0.1em] text-[1.15rem] tracking-[-0.02em] ${className}`}
+      className={`kp-brand inline-flex items-baseline ${sizes[size]} leading-none ${className}`}
       aria-label="KitPager"
     >
-      <span className={variant === "mono" ? "text-foreground" : "text-foreground"}>kit</span>
+      <span className="text-foreground">kit</span>
       <span className={variant === "mono" ? "text-foreground" : "text-primary"}>pager</span>
     </span>
   );
