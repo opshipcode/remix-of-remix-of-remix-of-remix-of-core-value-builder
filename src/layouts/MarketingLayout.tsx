@@ -4,9 +4,9 @@ import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 
 export default function MarketingLayout() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <MarketingNavbar />
-      <main className="pt-6">
+      <main className="flex-1">
         <Outlet />
       </main>
       <MarketingFooter />

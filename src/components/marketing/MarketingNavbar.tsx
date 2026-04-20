@@ -9,14 +9,11 @@ const NAV = [
   { to: "/features", label: "Features" },
   { to: "/templates", label: "Templates" },
   { to: "/pricing", label: "Pricing" },
-  { to: "/about", label: "About" },
-  { to: "/changelog", label: "Changelog" },
+  { to: "/how-it-works", label: "How it works" },
+  { to: "/examples", label: "Examples" },
+  { to: "/resources", label: "Resources" },
 ];
 
-/**
- * Floating glass navbar with a chevron (NOT a hamburger) that rotates 90deg when expanded.
- * Distinctive interaction motif required by the spec.
- */
 export function MarketingNavbar() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -24,7 +21,6 @@ export function MarketingNavbar() {
   const isAuthed = useAuthStore((s) => s.isAuthenticated);
 
   useEffect(() => setOpen(false), [location.pathname]);
-
   useEffect(() => {
     function onClick(e: MouseEvent) {
       if (!ref.current?.contains(e.target as Node)) setOpen(false);
@@ -41,11 +37,10 @@ export function MarketingNavbar() {
           className="kp-glass-strong mx-auto flex h-14 items-center justify-between rounded-full px-3 pl-5 shadow-md md:h-16 md:px-4 md:pl-6"
         >
           <Link to="/" className="flex items-center gap-2" aria-label="KitPager home">
-            <Logo />
+            <Logo size="md" />
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-1 lg:flex">
             {NAV.map((item) => {
               const active = location.pathname === item.to;
               return (
@@ -69,7 +64,7 @@ export function MarketingNavbar() {
             {isAuthed ? (
               <Link
                 to="/app"
-                className="hidden rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition hover:opacity-90 md:inline-flex"
+                className="hidden rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary-hover md:inline-flex"
               >
                 Open dashboard
               </Link>
@@ -83,20 +78,19 @@ export function MarketingNavbar() {
                 </Link>
                 <Link
                   to="/signup"
-                  className="hidden rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition hover:opacity-90 md:inline-flex"
+                  className="hidden rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary-hover md:inline-flex"
                 >
                   Start free
                 </Link>
               </>
             )}
 
-            {/* Chevron toggle (replaces hamburger) */}
             <button
               type="button"
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
-              className="ml-1 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-foreground transition hover:bg-surface-2 md:hidden"
+              className="ml-1 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-foreground transition hover:bg-surface-2 lg:hidden"
             >
               <ChevronLeft
                 className={`h-4 w-4 transition-transform duration-300 ease-smooth ${
@@ -107,10 +101,9 @@ export function MarketingNavbar() {
           </div>
         </div>
 
-        {/* Mobile drawer */}
         <div
-          className={`overflow-hidden transition-all duration-300 ease-smooth md:hidden ${
-            open ? "mt-2 max-h-[440px] opacity-100" : "max-h-0 opacity-0"
+          className={`overflow-hidden transition-all duration-300 ease-smooth lg:hidden ${
+            open ? "mt-2 max-h-[560px] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
           <div className="kp-glass-strong rounded-3xl p-3 shadow-md">
@@ -131,7 +124,7 @@ export function MarketingNavbar() {
               {isAuthed ? (
                 <Link
                   to="/app"
-                  className="flex-1 rounded-full bg-foreground px-4 py-2.5 text-center text-sm font-medium text-background"
+                  className="flex-1 rounded-full bg-primary px-4 py-2.5 text-center text-sm font-medium text-primary-foreground"
                 >
                   Open dashboard
                 </Link>
@@ -140,7 +133,7 @@ export function MarketingNavbar() {
                   <Link to="/login" className="flex-1 rounded-full border border-border px-4 py-2.5 text-center text-sm">
                     Sign in
                   </Link>
-                  <Link to="/signup" className="flex-1 rounded-full bg-foreground px-4 py-2.5 text-center text-sm font-medium text-background">
+                  <Link to="/signup" className="flex-1 rounded-full bg-primary px-4 py-2.5 text-center text-sm font-medium text-primary-foreground">
                     Start free
                   </Link>
                 </div>

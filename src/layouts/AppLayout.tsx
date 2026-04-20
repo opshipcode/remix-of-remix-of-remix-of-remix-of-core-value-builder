@@ -18,7 +18,7 @@ import { Logo } from "@/components/kit/Logo";
 import { ThemeToggle } from "@/components/kit/ThemeToggle";
 import { useAuthStore } from "@/store/auth";
 
-const NAV: { to: string; label: string; icon: typeof LayoutGrid }[] = [
+const NAV = [
   { to: "/app", label: "Overview", icon: LayoutGrid },
   { to: "/app/builder", label: "Builder", icon: Wand2 },
   { to: "/app/platforms", label: "Platforms", icon: Link2 },
@@ -28,7 +28,7 @@ const NAV: { to: string; label: string; icon: typeof LayoutGrid }[] = [
   { to: "/app/rates", label: "Rates", icon: DollarSign },
 ];
 
-const SETTINGS: { to: string; label: string }[] = [
+const SETTINGS = [
   { to: "/app/settings/profile", label: "Profile" },
   { to: "/app/settings/billing", label: "Billing" },
   { to: "/app/settings/security", label: "Security" },
@@ -42,19 +42,20 @@ export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const inSettings = location.pathname.startsWith("/app/settings");
+  const inBuilder = location.pathname.startsWith("/app/builder");
 
   return (
-    <div className="flex min-h-screen w-full bg-background">
+    <div className="flex h-[100dvh] w-full overflow-hidden bg-background">
       {/* Sidebar */}
       <aside
-        className={`sticky top-0 hidden h-screen shrink-0 flex-col border-r border-border bg-surface transition-[width] duration-300 ease-smooth md:flex ${
+        className={`hidden h-full shrink-0 flex-col border-r border-border bg-surface transition-[width] duration-300 ease-smooth md:flex ${
           collapsed ? "w-[72px]" : "w-[260px]"
         }`}
       >
         <div className="flex h-16 items-center justify-between px-4">
           {!collapsed && (
             <Link to="/app" className="flex items-center gap-2">
-              <Logo />
+              <Logo size="md" />
             </Link>
           )}
           <button
@@ -163,15 +164,15 @@ export default function AppLayout() {
         </div>
       </aside>
 
-      {/* Main */}
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur md:px-8">
+      {/* Main column — fixed shell, no outer scroll */}
+      <div className="flex h-full min-w-0 flex-1 flex-col overflow-hidden">
+        <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-background px-4 md:px-8">
           <div className="flex items-center gap-3 md:hidden">
-            <Logo />
+            <Logo size="sm" />
           </div>
           <div className="hidden items-center gap-2 md:flex">
             <p className="text-sm text-muted-foreground">
-              {inSettings ? "Settings" : "Workspace"}
+              {inBuilder ? "Builder" : inSettings ? "Settings" : "Workspace"}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -187,7 +188,11 @@ export default function AppLayout() {
             <ThemeToggle />
           </div>
         </header>
-        <main className="min-h-[calc(100vh-3.5rem)] p-5 md:p-8">
+        {/* Inner scroll container — only this scrolls. Builder will set overflow-hidden inside. */}
+        <main
+          data-scroll-root
+          className={`flex-1 min-h-0 ${inBuilder ? "overflow-hidden" : "overflow-y-auto"}`}
+        >
           <Outlet />
         </main>
       </div>

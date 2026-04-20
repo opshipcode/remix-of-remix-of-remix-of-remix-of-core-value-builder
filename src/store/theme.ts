@@ -12,7 +12,7 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
-      theme: "light",
+      theme: "dark",
       setTheme: (theme) => {
         applyTheme(theme);
         set({ theme });
@@ -39,13 +39,12 @@ function applyTheme(theme: Theme) {
   else root.classList.remove("dark");
 }
 
-// Apply on first import (handles SSR-safe path)
 if (typeof window !== "undefined") {
   const stored = localStorage.getItem("kp-theme");
   try {
     const parsed = stored ? JSON.parse(stored) : null;
-    applyTheme(parsed?.state?.theme ?? "light");
+    applyTheme(parsed?.state?.theme ?? "dark");
   } catch {
-    applyTheme("light");
+    applyTheme("dark");
   }
 }
