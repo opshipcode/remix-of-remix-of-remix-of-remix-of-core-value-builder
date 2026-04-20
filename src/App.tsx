@@ -4,13 +4,14 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-import "@/store/theme"; // initialize theme on load
+import "@/store/theme";
 
 import MarketingLayout from "@/layouts/MarketingLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import AppLayout from "@/layouts/AppLayout";
 import AdminLayout from "@/layouts/AdminLayout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { ScrollToTop } from "@/components/kit/ScrollToTop";
 
 import Home from "@/pages/marketing/Home";
 import Pricing from "@/pages/marketing/Pricing";
@@ -19,6 +20,12 @@ import Features from "@/pages/marketing/Features";
 import About from "@/pages/marketing/About";
 import Changelog from "@/pages/marketing/Changelog";
 import Contact from "@/pages/marketing/Contact";
+import HowItWorks from "@/pages/marketing/HowItWorks";
+import Security from "@/pages/marketing/Security";
+import Examples from "@/pages/marketing/Examples";
+import Resources from "@/pages/marketing/Resources";
+import Status from "@/pages/marketing/Status";
+import LegalPage from "@/pages/marketing/LegalPage";
 
 import Login from "@/pages/auth/Login";
 import Signup from "@/pages/auth/Signup";
@@ -28,9 +35,22 @@ import Onboarding from "@/pages/auth/Onboarding";
 
 import AppOverview from "@/pages/app/AppOverview";
 import Builder from "@/pages/app/Builder";
+import Platforms from "@/pages/app/Platforms";
+import Testimonials from "@/pages/app/Testimonials";
+import Inquiries from "@/pages/app/Inquiries";
+import Analytics from "@/pages/app/Analytics";
+import Rates from "@/pages/app/Rates";
+import Settings from "@/pages/app/Settings";
+
+import AdminOverview from "@/pages/admin/AdminOverview";
+import AdminUsers from "@/pages/admin/AdminUsers";
+import AdminModeration from "@/pages/admin/AdminModeration";
+import AdminAudit from "@/pages/admin/AdminAudit";
+import AdminSystem from "@/pages/admin/AdminSystem";
 
 import PublicKitPage from "@/pages/public/PublicKitPage";
-import ComingSoon from "@/components/kit/ComingSoon";
+import ReviewSubmission from "@/pages/public/ReviewSubmission";
+import PrivateShare from "@/pages/public/PrivateShare";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -41,6 +61,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           {/* Marketing */}
           <Route element={<MarketingLayout />}>
@@ -51,8 +72,12 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/changelog" element={<Changelog />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/status" element={<ComingSoon title="Status page" route="/status" description="Public status page with component health, incident timeline, and uptime — scaffolded next session." />} />
-            <Route path="/legal/:slug" element={<ComingSoon title="Legal page" description="Terms, Privacy, Cookies, AUP, DMCA, Refund, Data Request, Subprocessors — full content shells next session." />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/security" element={<Security />} />
+            <Route path="/examples" element={<Examples />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/status" element={<Status />} />
+            <Route path="/legal/:slug" element={<LegalPage />} />
           </Route>
 
           {/* Auth */}
@@ -68,28 +93,28 @@ const App = () => (
           <Route path="/app" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
             <Route index element={<AppOverview />} />
             <Route path="builder" element={<Builder />} />
-            <Route path="platforms" element={<ComingSoon title="Platforms" route="/app/platforms" />} />
-            <Route path="testimonials" element={<ComingSoon title="Testimonials" route="/app/testimonials" />} />
-            <Route path="inquiries" element={<ComingSoon title="Inquiries" route="/app/inquiries" />} />
-            <Route path="analytics" element={<ComingSoon title="Analytics" route="/app/analytics" />} />
-            <Route path="rates" element={<ComingSoon title="Rates" route="/app/rates" />} />
+            <Route path="platforms" element={<Platforms />} />
+            <Route path="testimonials" element={<Testimonials />} />
+            <Route path="inquiries" element={<Inquiries />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="rates" element={<Rates />} />
             <Route path="settings" element={<Navigate to="/app/settings/profile" replace />} />
-            <Route path="settings/:section" element={<ComingSoon title="Settings" />} />
+            <Route path="settings/:section" element={<Settings />} />
           </Route>
 
           {/* Admin */}
           <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
-            <Route index element={<ComingSoon title="Admin overview" route="/admin" />} />
-            <Route path="users" element={<ComingSoon title="Users" route="/admin/users" />} />
-            <Route path="moderation" element={<ComingSoon title="Moderation" route="/admin/moderation" />} />
-            <Route path="audit" element={<ComingSoon title="Audit log" route="/admin/audit" />} />
-            <Route path="system" element={<ComingSoon title="System health" route="/admin/system" />} />
+            <Route index element={<AdminOverview />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="moderation" element={<AdminModeration />} />
+            <Route path="audit" element={<AdminAudit />} />
+            <Route path="system" element={<AdminSystem />} />
           </Route>
 
-          {/* Public creator pages — must be last so it doesn't shadow defined routes */}
+          {/* Public */}
+          <Route path="/review/:token" element={<ReviewSubmission />} />
+          <Route path="/share/:token" element={<PrivateShare />} />
           <Route path="/:slug" element={<PublicKitPage />} />
-          <Route path="/review/:token" element={<ComingSoon title="Brand testimonial submission" description="Public form for brands to submit a testimonial via secure token." />} />
-          <Route path="/share/:token" element={<ComingSoon title="Private share" description="Password-gated private share view of a creator page." />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
