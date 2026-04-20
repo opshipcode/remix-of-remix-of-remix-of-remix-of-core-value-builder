@@ -73,8 +73,8 @@ export function MarketingFooter() {
           </div>
 
           <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-border/70 pt-6 text-xs text-muted-foreground md:flex-row md:items-center">
-            <p>&copy; {new Date().getFullYear()} KitPager, Inc. All rights reserved.</p>
-            <p className="kp-mono">v0.1.0 — preview build</p>
+            <p>&copy; {new Date().getFullYear()} KitPager Co. All rights reserved.</p>
+            <p className="kp-mono">- v0.1.0</p>
           </div>
         </div>
       </footer>
@@ -82,7 +82,7 @@ export function MarketingFooter() {
       {/* Giant faded brand signature — always full width, never clipped */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex justify-center overflow-visible"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex justify-center overflow-visible"
       >
         <div className="kp-footer-signature whitespace-nowrap leading-none">
           kitpager
