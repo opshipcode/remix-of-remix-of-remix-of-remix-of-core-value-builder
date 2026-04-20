@@ -30,8 +30,8 @@ export function MarketingNavbar() {
   }, [open]);
 
   return (
-    <header className="sticky top-4 z-50 px-4">
-      <div className="kp-container">
+    <header className="sticky top-4 z-50 px-4 bg-none">
+      <div className="kp-container bg-none">
         <div
           ref={ref}
           className="kp-glass-strong mx-auto flex h-14 items-center justify-between rounded-full px-3 pl-5 shadow-md md:h-16 md:px-4 md:pl-6"
