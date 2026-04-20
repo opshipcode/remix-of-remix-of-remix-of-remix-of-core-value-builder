@@ -82,7 +82,7 @@ export function MarketingFooter() {
       {/* Giant faded brand signature — always full width, never clipped */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex justify-center overflow-visible"
+        className="pointer-events-none inset-x-0 bottom-0 z-30 flex justify-center overflow-visible"
       >
         <div className="kp-footer-signature whitespace-nowrap leading-none">
           kitpager
