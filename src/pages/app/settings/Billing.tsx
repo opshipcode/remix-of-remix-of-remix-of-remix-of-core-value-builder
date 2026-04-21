@@ -1,5 +1,10 @@
+import { useState } from "react";
 import { useAuthStore } from "@/store/auth";
 import { Sparkles, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePageLoader } from "@/hooks/usePageLoader";
+import { toast } from "@/hooks/use-toast";
 
 const HISTORY = [
   { id: "i1", date: "Apr 1, 2026", desc: "Creator plan — monthly", amount: "$12.00", status: "Paid" },
@@ -8,7 +13,20 @@ const HISTORY = [
 ];
 
 export default function Billing() {
+  const { loading } = usePageLoader(700);
   const plan = useAuthStore((s) => s.user?.plan ?? "free");
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const handleDownload = (id: string) => {
+    setDownloadingId(id);
+    window.setTimeout(() => {
+      setDownloadingId(null);
+      toast({ title: "Invoice downloaded", description: `Saved invoice ${id} as PDF.` });
+    }, 900);
+  };
+
+  if (loading) return <BillingSkeleton />;
+
   return (
     <div className="space-y-6">
       <div className="kp-card overflow-hidden">
@@ -19,10 +37,9 @@ export default function Billing() {
               <p className="kp-display text-4xl text-primary-foreground capitalize">{plan}</p>
               <p className="mt-1 text-sm text-primary-foreground/80">$12 / month, renews May 1, 2026</p>
             </div>
-            <button className="rounded-full bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:opacity-90">
-              <Sparkles className="mr-1.5 inline h-4 w-4" />
-              Upgrade to Pro
-            </button>
+            <Button planLock="Pro" variant="secondary" className="rounded-full">
+              <Sparkles className="h-4 w-4" /> Upgrade to Pro
+            </Button>
           </div>
         </div>
         <div className="grid grid-cols-3 divide-x divide-border bg-card text-center">
@@ -63,15 +80,30 @@ export default function Billing() {
                   <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-xs text-success">{h.status}</span>
                 </td>
                 <td className="px-5 py-3 text-right">
-                  <button className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    loaderClick
+                    isLoading={downloadingId === h.id}
+                    onClick={() => handleDownload(h.id)}
+                  >
                     <Download className="h-3.5 w-3.5" /> PDF
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+function BillingSkeleton() {
+  return (
+    <div className="space-y-6">
+      <Skeleton className="h-44" />
+      <Skeleton className="h-64" />
     </div>
   );
 }
