@@ -12,11 +12,18 @@ import {
   LogOut,
   ExternalLink,
   ChevronLeft,
+  Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/kit/Logo";
 import { ThemeToggle } from "@/components/kit/ThemeToggle";
 import { useAuthStore } from "@/store/auth";
+import { useEffectivePlan } from "@/store/plan";
+import { TrialBanner } from "@/components/kit/TrialBanner";
+import { LogoutModal } from "@/components/kit/LogoutModal";
+import { WelcomeModal } from "@/components/kit/WelcomeModal";
+import { HelpBubble } from "@/components/kit/HelpBubble";
+import type { PlanLockTarget } from "@/components/ui/button";
 
 const NAV = [
   { to: "/app", label: "Overview", icon: LayoutGrid },
@@ -38,11 +45,22 @@ const SETTINGS = [
 ];
 
 export default function AppLayout() {
-  const { user, signOut } = useAuthStore();
+  const { user } = useAuthStore();
   const [collapsed, setCollapsed] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
+  const effectivePlan = useEffectivePlan();
   const location = useLocation();
   const inSettings = location.pathname.startsWith("/app/settings");
   const inBuilder = location.pathname.startsWith("/app/builder");
+
+  const handleUpgrade = (target: PlanLockTarget) => {
+    window.dispatchEvent(
+      new CustomEvent<{ targetPlan: PlanLockTarget; featureName: string }>(
+        "kp:upgrade",
+        { detail: { targetPlan: target, featureName: "your workspace" } },
+      ),
+    );
+  };
 
   return (
     <div className="flex h-[100dvh] w-full overflow-hidden bg-background">
@@ -68,24 +86,33 @@ export default function AppLayout() {
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
-          {NAV.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === "/app"}
-              className={({ isActive }) =>
-                `group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
-                  isActive
-                    ? "bg-surface-offset text-foreground"
-                    : "text-muted-foreground hover:bg-surface-2 hover:text-foreground"
-                }`
-              }
-            >
-              <item.icon className="h-4 w-4 shrink-0" />
-              {!collapsed && <span>{item.label}</span>}
-            </NavLink>
-          ))}
+        <nav id="kp-sidebar-nav" className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
+          {NAV.map((item) => {
+            const targetId =
+              item.to === "/app/builder"
+                ? "kp-nav-builder"
+                : item.to === "/app/platforms"
+                  ? "kp-nav-platforms"
+                  : undefined;
+            return (
+              <NavLink
+                key={item.to}
+                id={targetId}
+                to={item.to}
+                end={item.to === "/app"}
+                className={({ isActive }) =>
+                  `group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
+                    isActive
+                      ? "bg-surface-offset text-foreground"
+                      : "text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+                  }`
+                }
+              >
+                <item.icon className="h-4 w-4 shrink-0" />
+                {!collapsed && <span>{item.label}</span>}
+              </NavLink>
+            );
+          })}
 
           <div className="pt-4">
             {!collapsed && (
@@ -130,6 +157,23 @@ export default function AppLayout() {
           )}
         </nav>
 
+        {/* Free plan persistent upgrade CTA */}
+        {!collapsed && effectivePlan === "Free" && (
+          <div className="px-3 pb-2">
+            <button
+              type="button"
+              onClick={() => handleUpgrade("Creator")}
+              className="flex w-full items-center justify-between gap-2 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 px-3 py-2.5 text-left text-sm transition-all hover:from-primary/30"
+            >
+              <span className="flex items-center gap-2 text-foreground">
+                <Sparkles className="h-4 w-4 text-primary" />
+                Upgrade
+              </span>
+              <span className="text-xs text-muted-foreground">Creator →</span>
+            </button>
+          </div>
+        )}
+
         <div className="border-t border-border p-3">
           {!collapsed ? (
             <div className="flex items-center gap-3 rounded-xl bg-surface-2 px-3 py-2">
@@ -144,7 +188,7 @@ export default function AppLayout() {
               </div>
               <button
                 type="button"
-                onClick={signOut}
+                onClick={() => setLogoutOpen(true)}
                 aria-label="Sign out"
                 className="rounded-md p-1 text-muted-foreground transition hover:text-foreground"
               >
@@ -154,7 +198,7 @@ export default function AppLayout() {
           ) : (
             <button
               type="button"
-              onClick={signOut}
+              onClick={() => setLogoutOpen(true)}
               aria-label="Sign out"
               className="grid h-9 w-full place-items-center rounded-xl text-muted-foreground hover:text-foreground"
             >
@@ -177,6 +221,7 @@ export default function AppLayout() {
           </div>
           <div className="flex items-center gap-2">
             <a
+              id="kp-view-page"
               href={`/${user?.slug ?? ""}`}
               target="_blank"
               rel="noreferrer"
@@ -188,7 +233,7 @@ export default function AppLayout() {
             <ThemeToggle />
           </div>
         </header>
-        {/* Inner scroll container — only this scrolls. Builder will set overflow-hidden inside. */}
+        <TrialBanner />
         <main
           data-scroll-root
           className={`flex-1 min-h-0 ${inBuilder ? "overflow-hidden" : "overflow-y-auto"}`}
@@ -196,6 +241,10 @@ export default function AppLayout() {
           <Outlet />
         </main>
       </div>
+
+      <LogoutModal open={logoutOpen} onClose={() => setLogoutOpen(false)} />
+      <WelcomeModal />
+      <HelpBubble />
     </div>
   );
 }

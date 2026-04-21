@@ -16,6 +16,7 @@ const NAV = [
 
 export function MarketingNavbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const isAuthed = useAuthStore((s) => s.isAuthenticated);
@@ -28,13 +29,23 @@ export function MarketingNavbar() {
     if (open) document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
   }, [open]);
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 80);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-4 z-50 px-4 bg-none">
-      <div className="kp-container bg-none">
+    <header className="sticky top-4 z-50 px-4">
+      <div className="kp-container">
         <div
           ref={ref}
-          className="kp-glass-strong mx-auto flex h-14 items-center justify-between rounded-full px-3 pl-5 shadow-md md:h-16 md:px-4 md:pl-6"
+          className={`mx-auto flex h-14 items-center justify-between rounded-full px-3 pl-5 transition-all duration-300 md:h-16 md:px-4 md:pl-6 ${
+            scrolled ? "kp-glass-strong shadow-md" : "border border-transparent"
+          }`}
         >
           <Link to="/" className="flex items-center gap-2" aria-label="KitPager home">
             <Logo size="md" />

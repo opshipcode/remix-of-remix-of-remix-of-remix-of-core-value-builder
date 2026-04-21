@@ -1,5 +1,7 @@
 /**
- * KitPager wordmark — uses the brand font "Jumping Chick".
+ * KitPager wordmark — Basenji font.
+ * variant="default" → upright Basenji Semibold (navbar, sidebar, admin)
+ * variant="slanted" → oblique Basenji (footer watermark only)
  */
 export function Logo({
   className = "",
@@ -7,13 +9,14 @@ export function Logo({
   size = "md",
 }: {
   className?: string;
-  variant?: "default" | "mono";
+  variant?: "default" | "slanted" | "mono";
   size?: "sm" | "md" | "lg";
 }) {
   const sizes = { sm: "text-xl", md: "text-2xl", lg: "text-3xl" } as const;
+  const brandClass = variant === "slanted" ? "kp-brand-slanted" : "kp-brand";
   return (
     <span
-      className={`kp-brand inline-flex items-baseline ${sizes[size]} leading-none ${className}`}
+      className={`${brandClass} inline-flex items-baseline ${sizes[size]} leading-none ${className}`}
       aria-label="KitPager"
     >
       <span className="text-foreground">kit</span>

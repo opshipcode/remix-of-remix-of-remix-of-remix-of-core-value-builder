@@ -2,7 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Brand display font for the LOGO TEXT only */
+/* Brand display font for the LOGO WORDMARK only — Basenji */
+@font-face {
+  font-family: "Basenji";
+  src: url("/fonts/Basenji-Semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Basenji";
+  src: url("/fonts/Basenji-SemiboldSlanted.otf") format("opentype");
+  font-weight: 600;
+  font-style: oblique;
+  font-display: swap;
+}
+/* Legacy Jumping Chick kept as fallback for any leftover references */
 @font-face {
   font-family: "Jumping Chick";
   src: url("/fonts/Jumping_Chick.otf") format("opentype"),
@@ -183,8 +198,16 @@
     font-feature-settings: "ss02";
   }
   .kp-brand {
-    font-family: "Jumping Chick", "Basteleur", "Fraunces", Georgia, serif;
-    letter-spacing: 0.01em;
+    font-family: "Basenji", "Jumping Chick", "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0.005em;
+  }
+  .kp-brand-slanted {
+    font-family: "Basenji", "Jumping Chick", "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-style: oblique;
+    letter-spacing: 0.005em;
   }
   .kp-glass {
     background: hsl(var(--surface) / 0.72);
@@ -221,11 +244,12 @@
     100% { background-position: -200% 0; }
   }
   .kp-footer-signature {
-    font-family: "Jumping Chick", "Basteleur", "Fraunces", Georgia, serif;
-    font-weight: 400;
-    font-size: clamp(5rem, 22vw, 22rem);
+    font-family: "Basenji", "Jumping Chick", "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-style: oblique;
+    font-size: clamp(5rem, 18vw, 18rem);
     line-height: 0.85;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     color: transparent;
     -webkit-text-stroke: 1px hsl(var(--foreground) / 0.16);
     background: linear-gradient(180deg, hsl(var(--foreground) / 0.10) 0%, hsl(var(--foreground) / 0.02) 100%);
