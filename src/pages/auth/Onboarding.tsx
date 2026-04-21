@@ -193,7 +193,11 @@ function StepIdentity({ displayName, setDisplayName, slug, setSlug, headline, se
   useEffect(() => {
     if (!slug) { setSlugStatus("idle"); return; }
     const sync = validateSlugSync(slug);
-    if (!sync.ok) { setSlugStatus("bad"); setSlugMsg(sync.reason); return; }
+    if (sync.ok === false) {
+      setSlugStatus("bad");
+      setSlugMsg(sync.reason);
+      return;
+    }
     setSlugStatus("checking");
     const id = window.setTimeout(async () => {
       const available = await checkSlugAvailability(slug);
