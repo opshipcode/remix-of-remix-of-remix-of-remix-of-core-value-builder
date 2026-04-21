@@ -95,8 +95,24 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const lockClasses = planLock ? "opacity-60 cursor-not-allowed" : "";
 
+    // When asChild is true, Slot requires exactly ONE React element child.
+    // We can't inject sibling Spinner / lock badges in that mode — pass the
+    // single child through unchanged.
+    if (asChild) {
+      return (
+        <Slot
+          className={cn(buttonVariants({ variant, size, className }), lockClasses)}
+          ref={ref}
+          onClick={handleClick}
+          {...props}
+        >
+          {children as React.ReactElement}
+        </Slot>
+      );
+    }
+
     return (
-      <Comp
+      <button
         className={cn(buttonVariants({ variant, size, className }), lockClasses)}
         ref={ref}
         onClick={handleClick}
@@ -111,7 +127,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             {planLock}
           </span>
         ) : null}
-      </Comp>
+      </button>
     );
   },
 );
