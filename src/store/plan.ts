@@ -21,6 +21,9 @@ export interface PlanState {
   setStatus: (status: SubscriptionStatus) => void;
   setTrialEndsAt: (date: Date | null) => void;
   setGraceEndsAt: (date: Date | null) => void;
+  startCreatorTrial: (days?: number) => void;
+  enterGracePeriod: (hours?: number) => void;
+  jumpToState: (status: SubscriptionStatus) => void;
 }
 
 export const usePlanStore = create<PlanState>()(
@@ -35,6 +38,36 @@ export const usePlanStore = create<PlanState>()(
       setStatus: (status) => set({ status }),
       setTrialEndsAt: (date) => set({ trialEndsAt: date ? date.toISOString() : null }),
       setGraceEndsAt: (date) => set({ graceEndsAt: date ? date.toISOString() : null }),
+      startCreatorTrial: (days = 7) =>
+        set({
+          plan: "Creator",
+          status: "trialing",
+          trialEndsAt: new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString(),
+          graceEndsAt: null,
+        }),
+      enterGracePeriod: (hours = 48) =>
+        set({
+          status: "grace_period",
+          graceEndsAt: new Date(Date.now() + hours * 60 * 60 * 1000).toISOString(),
+        }),
+      jumpToState: (status) => {
+        const now = Date.now();
+        const patch: Partial<PlanState> = { status };
+        if (status === "trialing") {
+          patch.trialEndsAt = new Date(now + 2 * 24 * 60 * 60 * 1000).toISOString();
+          patch.graceEndsAt = null;
+        } else if (status === "grace_period") {
+          patch.graceEndsAt = new Date(now + 48 * 60 * 60 * 1000).toISOString();
+        } else if (status === "active") {
+          patch.trialEndsAt = null;
+          patch.graceEndsAt = null;
+          patch.billingRenewalDate = new Date(now + 30 * 24 * 60 * 60 * 1000).toISOString();
+        } else {
+          patch.trialEndsAt = null;
+          patch.graceEndsAt = null;
+        }
+        set(patch);
+      },
     }),
     { name: "kp-plan-state" },
   ),

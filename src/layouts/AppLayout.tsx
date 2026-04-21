@@ -13,6 +13,7 @@ import {
   ExternalLink,
   ChevronLeft,
   Sparkles,
+  Menu,
 } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/kit/Logo";
@@ -24,6 +25,8 @@ import { LogoutModal } from "@/components/kit/LogoutModal";
 import { WelcomeModal } from "@/components/kit/WelcomeModal";
 import { HelpBubble } from "@/components/kit/HelpBubble";
 import type { PlanLockTarget } from "@/components/ui/button";
+import { AppTabBar } from "@/components/app/AppTabBar";
+import { MobileMoreSheet } from "@/components/app/MobileMoreSheet";
 
 const NAV = [
   { to: "/app", label: "Overview", icon: LayoutGrid },
@@ -48,6 +51,8 @@ export default function AppLayout() {
   const { user } = useAuthStore();
   const [collapsed, setCollapsed] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [hamburgerOpen, setHamburgerOpen] = useState(false);
   const effectivePlan = useEffectivePlan();
   const location = useLocation();
   const inSettings = location.pathname.startsWith("/app/settings");
@@ -66,7 +71,7 @@ export default function AppLayout() {
     <div className="flex h-[100dvh] w-full overflow-hidden bg-background">
       {/* Sidebar */}
       <aside
-        className={`hidden h-full shrink-0 flex-col border-r border-border bg-surface transition-[width] duration-300 ease-smooth md:flex ${
+        className={`hidden h-full shrink-0 flex-col border-r border-border bg-surface transition-[width] duration-300 ease-smooth lg:flex ${
           collapsed ? "w-[72px]" : "w-[260px]"
         }`}
       >
@@ -211,10 +216,18 @@ export default function AppLayout() {
       {/* Main column — fixed shell, no outer scroll */}
       <div className="flex h-full min-w-0 flex-1 flex-col overflow-hidden">
         <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-background px-4 md:px-8">
-          <div className="flex items-center gap-3 md:hidden">
+          <div className="flex items-center gap-3 lg:hidden">
+            <button
+              type="button"
+              aria-label="Open navigation"
+              onClick={() => setHamburgerOpen(true)}
+              className="hidden h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-muted-foreground transition hover:text-foreground sm:inline-flex lg:hidden"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
             <Logo size="sm" />
           </div>
-          <div className="hidden items-center gap-2 md:flex">
+          <div className="hidden items-center gap-2 lg:flex">
             <p className="text-sm text-muted-foreground">
               {inBuilder ? "Builder" : inSettings ? "Settings" : "Workspace"}
             </p>
@@ -236,7 +249,7 @@ export default function AppLayout() {
         <TrialBanner />
         <main
           data-scroll-root
-          className={`flex-1 min-h-0 ${inBuilder ? "overflow-hidden" : "overflow-y-auto"}`}
+          className={`flex-1 min-h-0 pb-16 sm:pb-0 ${inBuilder ? "overflow-hidden" : "overflow-y-auto"}`}
         >
           <Outlet />
         </main>
@@ -245,6 +258,12 @@ export default function AppLayout() {
       <LogoutModal open={logoutOpen} onClose={() => setLogoutOpen(false)} />
       <WelcomeModal />
       <HelpBubble />
+      <AppTabBar unreadInquiries={2} onMoreClick={() => setMoreOpen(true)} />
+      <MobileMoreSheet
+        open={moreOpen || hamburgerOpen}
+        onClose={() => { setMoreOpen(false); setHamburgerOpen(false); }}
+        onLogoutClick={() => setLogoutOpen(true)}
+      />
     </div>
   );
 }
