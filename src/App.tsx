@@ -12,6 +12,7 @@ import AppLayout from "@/layouts/AppLayout";
 import AdminLayout from "@/layouts/AdminLayout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { ScrollToTop } from "@/components/kit/ScrollToTop";
+import { UpgradeModalHost } from "@/components/kit/UpgradeModal";
 
 import Home from "@/pages/marketing/Home";
 import Pricing from "@/pages/marketing/Pricing";
@@ -62,6 +63,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <UpgradeModalHost />
         <Routes>
           {/* Marketing */}
           <Route element={<MarketingLayout />}>

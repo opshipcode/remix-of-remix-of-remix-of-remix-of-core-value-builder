@@ -12,11 +12,18 @@ import {
   LogOut,
   ExternalLink,
   ChevronLeft,
+  Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/kit/Logo";
 import { ThemeToggle } from "@/components/kit/ThemeToggle";
 import { useAuthStore } from "@/store/auth";
+import { useEffectivePlan } from "@/store/plan";
+import { TrialBanner } from "@/components/kit/TrialBanner";
+import { LogoutModal } from "@/components/kit/LogoutModal";
+import { WelcomeModal } from "@/components/kit/WelcomeModal";
+import { HelpBubble } from "@/components/kit/HelpBubble";
+import type { PlanLockTarget } from "@/components/ui/button";
 
 const NAV = [
   { to: "/app", label: "Overview", icon: LayoutGrid },
