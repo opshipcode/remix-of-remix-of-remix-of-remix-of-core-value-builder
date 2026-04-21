@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
+import { Lock } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -30,16 +31,88 @@ const buttonVariants = cva(
   },
 );
 
+export type PlanLockTarget = "Creator" | "Pro";
+
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  /** Wire a 16px spinning ring to the left of the label when isLoading=true */
+  loaderClick?: boolean;
+  /** Controls the loader visibility (parent owns the state) */
+  isLoading?: boolean;
+  /** When set, button shows a lock badge and clicking opens the upgrade modal */
+  planLock?: PlanLockTarget;
 }
 
+const Spinner = () => (
+  <span
+    aria-hidden
+    className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground"
+  />
+);
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      asChild = false,
+      loaderClick = false,
+      isLoading = false,
+      planLock,
+      onClick,
+      children,
+      disabled,
+      ...props
+    },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (planLock) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Dispatch a global custom event the UpgradeModal mount point listens to.
+        window.dispatchEvent(
+          new CustomEvent<{ targetPlan: PlanLockTarget; featureName: string }>(
+            "kp:upgrade",
+            {
+              detail: {
+                targetPlan: planLock,
+                featureName:
+                  typeof children === "string" ? children : "this feature",
+              },
+            },
+          ),
+        );
+        return;
+      }
+      onClick?.(e);
+    };
+
+    const lockClasses = planLock ? "opacity-60 cursor-not-allowed" : "";
+
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }), lockClasses)}
+        ref={ref}
+        onClick={handleClick}
+        disabled={disabled || (loaderClick && isLoading)}
+        {...props}
+      >
+        {loaderClick && isLoading ? <Spinner /> : null}
+        {children}
+        {planLock ? (
+          <span className="ml-1 inline-flex items-center gap-1 rounded-full bg-background/40 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+            <Lock className="h-3 w-3" />
+            {planLock}
+          </span>
+        ) : null}
+      </Comp>
+    );
   },
 );
 Button.displayName = "Button";
