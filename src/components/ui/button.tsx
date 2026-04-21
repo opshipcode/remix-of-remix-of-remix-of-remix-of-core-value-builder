@@ -69,8 +69,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    const Comp = asChild ? Slot : "button";
-
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (planLock) {
         e.preventDefault();
