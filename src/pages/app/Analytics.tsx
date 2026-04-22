@@ -3,8 +3,25 @@ import { MOCK_ANALYTICS, formatNumber } from "@/lib/mockData";
 import { useAuthStore } from "@/store/auth";
 import { Lock, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { WorldMap, CountriesList, type CountryData } from "@/components/analytics/WorldMap";
 
-const FLAGS: Record<string, string> = { US: "🇺🇸", GB: "🇬🇧", CA: "🇨🇦", AU: "🇦🇺" };
+const COUNTRY_DATA: CountryData[] = [
+  { country: "US", views: 12400, flag: "🇺🇸", name: "United States" },
+  { country: "NG", views: 8200, flag: "🇳🇬", name: "Nigeria" },
+  { country: "GB", views: 4100, flag: "🇬🇧", name: "United Kingdom" },
+  { country: "CA", views: 3800, flag: "🇨🇦", name: "Canada" },
+  { country: "GH", views: 2900, flag: "🇬🇭", name: "Ghana" },
+  { country: "IN", views: 2400, flag: "🇮🇳", name: "India" },
+  { country: "AU", views: 1900, flag: "🇦🇺", name: "Australia" },
+  { country: "DE", views: 1600, flag: "🇩🇪", name: "Germany" },
+  { country: "BR", views: 1400, flag: "🇧🇷", name: "Brazil" },
+  { country: "ZA", views: 1100, flag: "🇿🇦", name: "South Africa" },
+  { country: "FR", views: 900, flag: "🇫🇷", name: "France" },
+  { country: "KE", views: 780, flag: "🇰🇪", name: "Kenya" },
+  { country: "JP", views: 640, flag: "🇯🇵", name: "Japan" },
+  { country: "MX", views: 520, flag: "🇲🇽", name: "Mexico" },
+  { country: "SG", views: 380, flag: "🇸🇬", name: "Singapore" },
+];
 
 export default function Analytics() {
   const isPro = useAuthStore((s) => s.user?.plan === "pro" || s.user?.plan === "creator");
@@ -16,14 +33,31 @@ export default function Analytics() {
         description="Visitor activity for your KitPager page — refreshed every minute."
       />
 
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         <Stat label="Views — 7d" value={formatNumber(MOCK_ANALYTICS.views7d)} delta="+12%" />
         <Stat label="Views — 30d" value={formatNumber(MOCK_ANALYTICS.views30d)} delta="+34%" />
         <Stat label="Unique visitors" value={formatNumber(MOCK_ANALYTICS.uniqueVisitors30d)} delta="+18%" />
         <Stat label="Avg time on page" value="2m 14s" delta="+0:09" />
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+      {/* Map + countries list */}
+      <div className="mt-6 grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+        <div className="kp-card relative overflow-hidden p-4 sm:p-6">
+          <div className="mb-4 flex items-baseline justify-between">
+            <h2 className="text-lg font-semibold">Visitors by country</h2>
+            <p className="text-xs text-muted-foreground">Last 30 days</p>
+          </div>
+          <div className="h-[320px] sm:h-[420px]">
+            <WorldMap data={COUNTRY_DATA} height="100%" />
+          </div>
+          {!isPro && <BlurGate />}
+        </div>
+        <div className="h-[320px] lg:h-auto lg:min-h-[420px]">
+          <CountriesList data={COUNTRY_DATA} />
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
         <div className="kp-card relative p-6">
           <h2 className="text-lg font-semibold">Visitor timeline</h2>
           <p className="mt-1 text-sm text-muted-foreground">Last 30 days</p>
@@ -37,24 +71,6 @@ export default function Analytics() {
         </div>
 
         <div className="kp-card relative p-6">
-          <h2 className="text-lg font-semibold">Top countries</h2>
-          <ul className="mt-4 space-y-3">
-            {MOCK_ANALYTICS.topCountries.map((c) => (
-              <li key={c.code} className="flex items-center justify-between text-sm">
-                <span className="flex items-center gap-2">
-                  <span className="text-lg">{FLAGS[c.code] ?? "🏳️"}</span>
-                  {c.code}
-                </span>
-                <span className="kp-mono text-muted-foreground">{c.count.toLocaleString()}</span>
-              </li>
-            ))}
-          </ul>
-          {!isPro && <BlurGate />}
-        </div>
-      </div>
-
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <div className="kp-card relative p-6">
           <h2 className="text-lg font-semibold">Top referrers</h2>
           <ul className="mt-4 divide-y divide-border">
             {MOCK_ANALYTICS.topReferrers.map((r) => (
@@ -66,19 +82,19 @@ export default function Analytics() {
           </ul>
           {!isPro && <BlurGate />}
         </div>
+      </div>
 
-        <div className="kp-card relative p-6">
-          <h2 className="text-lg font-semibold">Recent visits</h2>
-          <ul className="mt-4 space-y-2.5 text-sm">
-            {MOCK_ANALYTICS.recentViews.map((v, i) => (
-              <li key={i} className="flex items-center justify-between">
-                <span>{v.city}, {v.country}</span>
-                <span className="text-xs text-muted-foreground">{v.at}</span>
-              </li>
-            ))}
-          </ul>
-          {!isPro && <BlurGate />}
-        </div>
+      <div className="mt-6 kp-card relative p-6">
+        <h2 className="text-lg font-semibold">Recent visits</h2>
+        <ul className="mt-4 grid gap-2.5 text-sm sm:grid-cols-2 lg:grid-cols-3">
+          {MOCK_ANALYTICS.recentViews.map((v, i) => (
+            <li key={i} className="flex items-center justify-between rounded-xl bg-surface-2 px-3 py-2">
+              <span className="truncate">{v.city}, {v.country}</span>
+              <span className="ml-2 text-xs text-muted-foreground">{v.at}</span>
+            </li>
+          ))}
+        </ul>
+        {!isPro && <BlurGate />}
       </div>
     </AppPage>
   );

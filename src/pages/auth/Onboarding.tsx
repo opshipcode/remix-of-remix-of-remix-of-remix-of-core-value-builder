@@ -21,7 +21,7 @@ const STEPS = [
   { id: 5, title: "Plan", desc: "How you'll grow" },
 ];
 
-type ConnectedSet = Record<"tiktok" | "instagram" | "facebook" | "youtube", "idle" | "loading" | "connected">;
+type ConnectedSet = Record<"tiktok" | "instagram" | "youtube", "idle" | "loading" | "connected">;
 type PlanChoice = "Free" | "Creator" | "Pro";
 
 export default function Onboarding() {
@@ -43,7 +43,7 @@ export default function Onboarding() {
   const [continuing, setContinuing] = useState<boolean>(false);
 
   const [connected, setConnected] = useState<ConnectedSet>({
-    tiktok: "idle", instagram: "idle", facebook: "idle", youtube: "idle",
+    tiktok: "idle", instagram: "idle", youtube: "idle",
   });
 
   const handleFinish = () => {
@@ -262,8 +262,7 @@ interface PlatformsProps {
 function StepPlatforms({ connected, setConnected }: PlatformsProps) {
   const PLATFORMS: { id: keyof ConnectedSet; label: string; note?: string }[] = [
     { id: "tiktok", label: "TikTok", note: "TikTok metrics are self-reported until app approval — clearly labeled on your page." },
-    { id: "instagram", label: "Instagram", note: "Connect your Facebook Page and linked Instagram account together." },
-    { id: "facebook", label: "Facebook" },
+    { id: "instagram", label: "Instagram", note: "Connect via OAuth to verify your account and pull live engagement." },
     { id: "youtube", label: "YouTube" },
   ];
 

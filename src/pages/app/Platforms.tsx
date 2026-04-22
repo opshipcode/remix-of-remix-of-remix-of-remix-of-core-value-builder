@@ -22,21 +22,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Music2, Instagram, Youtube, Plus, Unlink, RefreshCw, ShieldCheck, Facebook } from "lucide-react";
+import { Music2, Instagram, Youtube, Plus, Unlink, RefreshCw, ShieldCheck } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 const ICONS: Record<PlatformId, typeof Instagram> = {
   tiktok: Music2,
   instagram: Instagram,
   youtube: Youtube,
-  facebook: Facebook,
 };
 
 const ALL_PLATFORMS: { id: PlatformId; label: string }[] = [
   { id: "tiktok", label: "TikTok" },
   { id: "instagram", label: "Instagram" },
   { id: "youtube", label: "YouTube" },
-  { id: "facebook", label: "Facebook" },
 ];
 
 function fmt(n: number) {

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useLocaleStore, SUPPORTED_LOCALES, type SupportedLocale } from "@/store/locale";
 
 const CACHE_KEY = "kp_locale";
+const OVERRIDE_KEY = "kp_locale_override";
 
 /**
  * Currency symbol map for currencies we render in the UI.
@@ -50,6 +51,26 @@ export function useLocaleDetect(): void {
 
   useEffect(() => {
     let cancelled = false;
+
+    // 0) explicit user override → force USD, never re-detect this session
+    try {
+      if (window.sessionStorage.getItem(OVERRIDE_KEY) === "USD") {
+        setLocale({
+          countryCode: "US",
+          countryName: "United States",
+          currencyCode: "USD",
+          currencySymbol: "$",
+          exchangeRate: 1,
+          locale: "en-US",
+          routePrefix: "",
+          forcedUSD: true,
+          detected: true,
+        });
+        return;
+      }
+    } catch {
+      /* ignore */
+    }
 
     // 1) hydrate from sessionStorage if fresh
     try {

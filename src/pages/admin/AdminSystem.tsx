@@ -1,3 +1,7 @@
+import { usePlanStore, type SubscriptionStatus } from "@/store/plan";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+
 const SERVICES = [
   { n: "API", p99: "182ms", err: "0.04%", status: "healthy" },
   { n: "Edge functions", p99: "210ms", err: "0.11%", status: "healthy" },
@@ -13,10 +17,43 @@ const QUOTAS = [
 ];
 
 export default function AdminSystem() {
+  const { status, jumpToState } = usePlanStore();
+  const STATES: SubscriptionStatus[] = [
+    "active", "trialing", "trial_expired", "grace_period", "expired", "cancelled",
+  ];
   return (
     <>
       <h1 className="kp-display text-3xl">System health</h1>
       <p className="mt-2 text-sm text-muted-foreground">Live service status, error rates, and third-party quotas.</p>
+
+      {/* Subscription state debug panel */}
+      <div className="kp-card mt-6 border-warning/30 bg-warning/5 p-5">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-warning">Debug · Subscription state</p>
+            <h2 className="kp-display mt-1 text-xl">Jump-to-state</h2>
+            <p className="text-xs text-muted-foreground">
+              Current: <span className="kp-mono">{status}</span>
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {STATES.map((s) => (
+            <Button
+              key={s}
+              variant={s === status ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                jumpToState(s);
+                toast({ title: `Subscription jumped`, description: `Now: ${s}` });
+              }}
+              className="rounded-full"
+            >
+              {s}
+            </Button>
+          ))}
+        </div>
+      </div>
 
       <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {SERVICES.map((s) => (
