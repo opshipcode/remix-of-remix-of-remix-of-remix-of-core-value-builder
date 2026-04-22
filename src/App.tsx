@@ -12,6 +12,7 @@ import MarketingLayout from "@/layouts/MarketingLayout";
 import AuthLayout from "@/layouts/AuthLayout";
 import AppLayout from "@/layouts/AppLayout";
 import AdminLayout from "@/layouts/AdminLayout";
+import { LocaleGate } from "@/layouts/LocaleGate";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { ScrollToTop } from "@/components/kit/ScrollToTop";
 import { UpgradeModalHost } from "@/components/kit/UpgradeModal";
@@ -83,20 +84,22 @@ function AppRoutes() {
           <Route path="/legal/:slug" element={<LegalPage />} />
         </Route>
 
-        {/* Marketing — locale-prefixed mirror */}
-        <Route path="/:locale" element={<MarketingLayout />}>
-          <Route index element={<Home />} />
-          <Route path="pricing" element={<Pricing />} />
-          <Route path="templates" element={<Templates />} />
-          <Route path="features" element={<Features />} />
-          <Route path="about" element={<About />} />
-          <Route path="how-it-works" element={<HowItWorks />} />
-          <Route path="security" element={<Security />} />
-          <Route path="examples" element={<Examples />} />
-          <Route path="resources" element={<Resources />} />
-          <Route path="status" element={<Status />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="changelog" element={<Changelog />} />
+        {/* Marketing — locale-prefixed mirror, with slug fallback when locale invalid */}
+        <Route path="/:locale" element={<LocaleGate />}>
+          <Route element={<MarketingLayout />}>
+            <Route index element={<Home />} />
+            <Route path="pricing" element={<Pricing />} />
+            <Route path="templates" element={<Templates />} />
+            <Route path="features" element={<Features />} />
+            <Route path="about" element={<About />} />
+            <Route path="how-it-works" element={<HowItWorks />} />
+            <Route path="security" element={<Security />} />
+            <Route path="examples" element={<Examples />} />
+            <Route path="resources" element={<Resources />} />
+            <Route path="status" element={<Status />} />
+            <Route path="contact" element={<Contact />} />
+            <Route path="changelog" element={<Changelog />} />
+          </Route>
         </Route>
 
         {/* Auth */}
@@ -133,7 +136,7 @@ function AppRoutes() {
         {/* Public */}
         <Route path="/review/:token" element={<ReviewSubmission />} />
         <Route path="/share/:token" element={<PrivateShare />} />
-        <Route path="/:slug" element={<PublicKitPage />} />
+        {/* /:slug is handled by LocaleGate above when not a locale */}
 
         <Route path="*" element={<NotFound />} />
       </Routes>
