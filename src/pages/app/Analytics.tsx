@@ -40,20 +40,22 @@ export default function Analytics() {
         <Stat label="Avg time on page" value="2m 14s" delta="+0:09" />
       </div>
 
-      {/* Map + countries list */}
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1.6fr_1fr]">
-        <div className="kp-card relative overflow-hidden p-4 sm:p-6">
+      {/* Map + countries list — fixed heights, internal scroll on countries */}
+      <div className="mt-6 grid gap-4 lg:h-[420px] lg:grid-cols-[1.6fr_1fr]">
+        <div className="kp-card relative flex h-[280px] flex-col overflow-hidden p-4 sm:p-6 lg:h-full">
           <div className="mb-4 flex items-baseline justify-between">
             <h2 className="text-lg font-semibold">Visitors by country</h2>
             <p className="text-xs text-muted-foreground">Last 30 days</p>
           </div>
-          <div className="h-[320px] sm:h-[420px]">
+          <div className="relative min-h-0 flex-1">
             <WorldMap data={COUNTRY_DATA} height="100%" />
           </div>
           {!isPro && <BlurGate />}
         </div>
-        <div className="h-[320px] lg:h-auto lg:min-h-[420px]">
-          <CountriesList data={COUNTRY_DATA} />
+        <div className="h-[320px] overflow-hidden lg:h-full">
+          <div className="h-full overflow-y-auto">
+            <CountriesList data={COUNTRY_DATA} />
+          </div>
         </div>
       </div>
 

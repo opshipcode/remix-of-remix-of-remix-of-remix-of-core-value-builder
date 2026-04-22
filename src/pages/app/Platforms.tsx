@@ -145,8 +145,11 @@ export default function Platforms() {
         {data.platforms.map((p) => {
           const Icon = ICONS[p.platform];
           return (
-            <div key={p.id} className="kp-card p-6">
-              <div className="flex items-center justify-between">
+            <div
+              key={p.id}
+              className={`kp-card p-6 transition-colors ${flashId === p.id ? "border-primary" : ""}`}
+            >
+              <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <span className="grid h-10 w-10 place-items-center rounded-xl bg-surface-2">
                     <Icon className="h-4 w-4" />
@@ -154,15 +157,26 @@ export default function Platforms() {
                   <div>
                     <p className="text-sm font-semibold capitalize">{p.platform}</p>
                     <p className="kp-mono text-xs text-muted-foreground">{p.handle}</p>
+                    {p.selfReported && !p.visible && (
+                      <p className="mt-0.5 text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
+                        Self-reported · Hidden
+                      </p>
+                    )}
                   </div>
                 </div>
-                {p.selfReported ? (
-                  <span className="rounded-full bg-warning/15 px-2.5 py-0.5 text-xs text-warning">Self-reported</span>
-                ) : (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-0.5 text-xs text-success">
-                    <ShieldCheck className="h-3 w-3" /> Verified
-                  </span>
-                )}
+                <div className="flex flex-col items-end gap-2">
+                  {p.selfReported ? (
+                    <span className="rounded-full bg-warning/15 px-2.5 py-0.5 text-xs text-warning">Self-reported</span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-0.5 text-xs text-success">
+                      <ShieldCheck className="h-3 w-3" /> Verified
+                    </span>
+                  )}
+                  <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
+                    Show on page
+                    <Switch checked={p.visible} onCheckedChange={() => handleToggleVisible(p)} />
+                  </label>
+                </div>
               </div>
               <div className="mt-6 grid grid-cols-3 gap-3 text-sm">
                 <Stat l="Followers" v={fmt(p.followers)} />
