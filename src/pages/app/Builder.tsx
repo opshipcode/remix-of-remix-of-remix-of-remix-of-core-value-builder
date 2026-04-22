@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Smartphone,
   Tablet,
@@ -20,6 +20,9 @@ import {
   Check,
   Lock,
   ExternalLink,
+  Minus,
+  Plus,
+  Maximize2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useKitPageStore, type TemplateId, type KitPageData } from "@/store/kitPage";
@@ -59,6 +62,19 @@ export default function Builder() {
   const [device, setDevice] = useState<DeviceId>("desktop");
   const [open, setOpen] = useState<string>("template");
   const [publishing, setPublishing] = useState(false);
+  const [zoom, setZoom] = useState<number>(() => {
+    if (typeof window === "undefined") return 1;
+    const raw = window.localStorage.getItem("kp_builder_zoom");
+    const n = raw ? Number(raw) : 1;
+    return Number.isFinite(n) && n >= 0.5 && n <= 1.5 ? n : 1;
+  });
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("kp_builder_zoom", String(zoom));
+    } catch {
+      // ignore
+    }
+  }, [zoom]);
   const current = DEVICES.find((d) => d.id === device)!;
 
   const handlePublish = () => {
@@ -114,17 +130,53 @@ export default function Builder() {
 
       {/* Main: canvas + right panel */}
       <div className="grid h-full min-h-0 flex-1 grid-cols-1 lg:grid-cols-[1fr_400px]">
-        {/* Live preview canvas */}
-        <div className="min-h-0 overflow-auto bg-surface-2 p-4 md:p-6">
-          <div className="mx-auto" style={{ maxWidth: current.w }}>
+        {/* Live preview canvas — never scrolls, device frame scales to fit */}
+        <div className="relative min-h-0 overflow-hidden bg-surface-2">
+          <div className="flex h-full w-full items-center justify-center p-4 md:p-6">
             <div
-              className="overflow-hidden rounded-3xl border border-border bg-background shadow-lg"
-              style={{ height: current.h }}
+              className="overflow-hidden rounded-3xl border border-border bg-background shadow-lg transition-[width,height] duration-300 ease-out"
+              style={{
+                width: current.w,
+                height: current.h,
+                maxWidth: "100%",
+                maxHeight: "100%",
+                transform: `scale(${zoom})`,
+                transformOrigin: "center top",
+                flexShrink: 0,
+              }}
             >
-              <div className="h-full overflow-auto">
+              <div className="h-full overflow-y-auto">
                 <TemplateRenderer data={data} preview />
               </div>
             </div>
+          </div>
+          {/* Zoom controls */}
+          <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full border border-border bg-background/90 p-1 shadow-md backdrop-blur">
+            <button
+              type="button"
+              onClick={() => setZoom((z) => Math.max(0.5, Math.round((z - 0.1) * 10) / 10))}
+              className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+              aria-label="Zoom out"
+            >
+              <Minus className="h-3.5 w-3.5" />
+            </button>
+            <span className="kp-mono w-10 text-center text-xs">{Math.round(zoom * 100)}%</span>
+            <button
+              type="button"
+              onClick={() => setZoom((z) => Math.min(1.5, Math.round((z + 0.1) * 10) / 10))}
+              className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+              aria-label="Zoom in"
+            >
+              <Plus className="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setZoom(1)}
+              className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+              aria-label="Reset zoom"
+            >
+              <Maximize2 className="h-3.5 w-3.5" />
+            </button>
           </div>
         </div>
 

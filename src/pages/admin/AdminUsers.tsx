@@ -1,5 +1,6 @@
+import { Link } from "react-router-dom";
 import { MOCK_ADMIN_USERS } from "@/lib/mockData";
-import { Search, MoreHorizontal } from "lucide-react";
+import { Search, ChevronRight } from "lucide-react";
 
 export default function AdminUsers() {
   return (
@@ -28,8 +29,12 @@ export default function AdminUsers() {
           </thead>
           <tbody>
             {MOCK_ADMIN_USERS.map((u) => (
-              <tr key={u.id} className="border-t border-border">
-                <td className="px-5 py-3 font-medium">{u.email}</td>
+              <tr key={u.id} className="border-t border-border transition hover:bg-surface-2">
+                <td className="px-5 py-3 font-medium">
+                  <Link to={`/admin/users/${u.id}`} className="hover:text-primary">
+                    {u.email}
+                  </Link>
+                </td>
                 <td className="px-5 py-3">
                   <span className="rounded-full bg-primary-highlight px-2.5 py-0.5 text-xs capitalize text-primary">{u.plan}</span>
                 </td>
@@ -40,9 +45,9 @@ export default function AdminUsers() {
                 </td>
                 <td className="px-5 py-3 text-muted-foreground">{u.joinedAt}</td>
                 <td className="px-5 py-3 text-right">
-                  <button className="rounded-md p-1 text-muted-foreground hover:bg-surface-2 hover:text-foreground">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </button>
+                  <Link to={`/admin/users/${u.id}`} className="inline-flex rounded-md p-1 text-muted-foreground hover:bg-surface hover:text-foreground">
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
                 </td>
               </tr>
             ))}

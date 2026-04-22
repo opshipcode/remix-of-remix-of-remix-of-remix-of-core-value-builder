@@ -13,8 +13,8 @@ const ADMIN_NAV = [
 
 export default function AdminLayout() {
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-surface">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-background">
+      <header className="shrink-0 border-b border-border bg-surface">
         <div className="kp-container flex h-14 items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/app" className="inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground">
@@ -53,8 +53,10 @@ export default function AdminLayout() {
           </nav>
         </div>
       </header>
-      <main className="kp-container py-8">
-        <Outlet />
+      <main className="min-h-0 flex-1 overflow-y-auto">
+        <div className="kp-container py-8">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

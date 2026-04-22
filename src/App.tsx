@@ -20,6 +20,7 @@ import { UpgradeModalHost } from "@/components/kit/UpgradeModal";
 import Home from "@/pages/marketing/Home";
 import Pricing from "@/pages/marketing/Pricing";
 import Templates from "@/pages/marketing/Templates";
+import TemplatePreview from "@/pages/marketing/TemplatePreview";
 import Features from "@/pages/marketing/Features";
 import About from "@/pages/marketing/About";
 import Changelog from "@/pages/marketing/Changelog";
@@ -45,9 +46,13 @@ import Inquiries from "@/pages/app/Inquiries";
 import Analytics from "@/pages/app/Analytics";
 import Rates from "@/pages/app/Rates";
 import Settings from "@/pages/app/Settings";
+import AppTemplates from "@/pages/app/AppTemplates";
+import AppTemplatePreview from "@/pages/app/AppTemplatePreview";
+import Reports from "@/pages/app/Reports";
 
 import AdminOverview from "@/pages/admin/AdminOverview";
 import AdminUsers from "@/pages/admin/AdminUsers";
+import AdminUserDetail from "@/pages/admin/AdminUserDetail";
 import AdminModeration from "@/pages/admin/AdminModeration";
 import AdminAudit from "@/pages/admin/AdminAudit";
 import AdminSystem from "@/pages/admin/AdminSystem";
@@ -55,6 +60,8 @@ import AdminSystem from "@/pages/admin/AdminSystem";
 import PublicKitPage from "@/pages/public/PublicKitPage";
 import ReviewSubmission from "@/pages/public/ReviewSubmission";
 import PrivateShare from "@/pages/public/PrivateShare";
+import CreatorReviewPage from "@/pages/public/CreatorReviewPage";
+import ReportPage from "@/pages/public/ReportPage";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -72,6 +79,7 @@ function AppRoutes() {
           <Route path="/" element={<Home />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/templates" element={<Templates />} />
+          <Route path="/templates/:templateId" element={<TemplatePreview />} />
           <Route path="/features" element={<Features />} />
           <Route path="/about" element={<About />} />
           <Route path="/changelog" element={<Changelog />} />
@@ -84,12 +92,13 @@ function AppRoutes() {
           <Route path="/legal/:slug" element={<LegalPage />} />
         </Route>
 
-        {/* Marketing — locale-prefixed mirror, with slug fallback when locale invalid */}
+        {/* Marketing — locale-prefixed mirror */}
         <Route path="/:locale" element={<LocaleGate />}>
           <Route element={<MarketingLayout />}>
             <Route index element={<Home />} />
             <Route path="pricing" element={<Pricing />} />
             <Route path="templates" element={<Templates />} />
+            <Route path="templates/:templateId" element={<TemplatePreview />} />
             <Route path="features" element={<Features />} />
             <Route path="about" element={<About />} />
             <Route path="how-it-works" element={<HowItWorks />} />
@@ -120,6 +129,9 @@ function AppRoutes() {
           <Route path="inquiries" element={<Inquiries />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="rates" element={<Rates />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="templates" element={<AppTemplates />} />
+          <Route path="templates/:templateId" element={<AppTemplatePreview />} />
           <Route path="settings" element={<Navigate to="/app/settings/profile" replace />} />
           <Route path="settings/:section" element={<Settings />} />
         </Route>
@@ -128,14 +140,17 @@ function AppRoutes() {
         <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
           <Route index element={<AdminOverview />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="users/:userId" element={<AdminUserDetail />} />
           <Route path="moderation" element={<AdminModeration />} />
           <Route path="audit" element={<AdminAudit />} />
           <Route path="system" element={<AdminSystem />} />
         </Route>
 
-        {/* Public */}
+        {/* Public — order matters: review and watch BEFORE LocaleGate */}
         <Route path="/review/:token" element={<ReviewSubmission />} />
         <Route path="/share/:token" element={<PrivateShare />} />
+        <Route path="/watch/:period/:id" element={<ReportPage />} />
+        <Route path="/:slug/review" element={<CreatorReviewPage />} />
         {/* /:slug is handled by LocaleGate above when not a locale */}
 
         <Route path="*" element={<NotFound />} />
