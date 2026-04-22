@@ -59,7 +59,7 @@ export default function Testimonials() {
   const [confirm, setConfirm] = useState<ConfirmState | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const link = "https://kitpager.pro/review/k7s2-9f3a-bb1c";
+  const link = `https://kitpager.co/${data.slug}/review`;
 
   if (loading) return <AppPage><AppPageSkeleton cards={3} /></AppPage>;
 
@@ -117,9 +117,9 @@ export default function Testimonials() {
       />
 
       <div className="kp-card mb-8 p-6">
-        <h2 className="text-lg font-semibold">Request a testimonial</h2>
+        <h2 className="text-lg font-semibold">Public review link</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Send this link to a brand. They submit their testimonial via a Turnstile-protected form — no account required.
+          Share this public link with past brand partners to collect verified reviews. Anyone with the link can leave a review — protected by Turnstile and per-visitor rate limiting.
         </p>
         <div className="mt-5 flex flex-col gap-3 md:flex-row">
           <input
@@ -132,6 +132,9 @@ export default function Testimonials() {
             {copied ? "Copied" : "Copy link"}
           </Button>
         </div>
+        <p className="mt-3 text-xs text-muted-foreground">
+          Need to invite one specific brand contact privately? Send them a single-use invite link from the inquiry thread instead.
+        </p>
       </div>
 
       <h2 className="kp-display mb-4 text-2xl">Pending approval ({pending.length})</h2>
