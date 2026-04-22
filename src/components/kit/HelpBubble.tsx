@@ -25,7 +25,7 @@ const STEPS: HelpStep[] = [
   {
     targetId: "kp-nav-platforms",
     title: "Connect your channels",
-    body: "Link TikTok, Instagram, Facebook, and YouTube for verified follower counts.",
+    body: "Link TikTok, Instagram, and YouTube for verified follower counts.",
     position: "right",
   },
   {

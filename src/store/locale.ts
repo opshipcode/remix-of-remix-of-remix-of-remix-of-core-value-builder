@@ -41,6 +41,7 @@ export const useLocaleStore = create<LocaleState>((set) => ({
       exchangeRate: 1,
       locale: "en-US",
       forcedUSD: true,
+      routePrefix: "",
     })),
 }));
 

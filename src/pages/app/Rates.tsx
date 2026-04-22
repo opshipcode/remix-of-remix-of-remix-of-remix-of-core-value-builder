@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Trash2, Eye, EyeOff, Save } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
-const PLATFORM_OPTS: PlatformId[] = ["tiktok", "instagram", "youtube", "facebook"];
+const PLATFORM_OPTS: PlatformId[] = ["tiktok", "instagram", "youtube"];
 
 export default function Rates() {
   const { loading } = usePageLoader();
