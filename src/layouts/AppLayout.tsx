@@ -20,13 +20,14 @@ import { Logo } from "@/components/kit/Logo";
 import { ThemeToggle } from "@/components/kit/ThemeToggle";
 import { useAuthStore } from "@/store/auth";
 import { useEffectivePlan } from "@/store/plan";
-import { TrialBanner } from "@/components/kit/TrialBanner";
 import { LogoutModal } from "@/components/kit/LogoutModal";
 import { WelcomeModal } from "@/components/kit/WelcomeModal";
 import { HelpBubble } from "@/components/kit/HelpBubble";
 import type { PlanLockTarget } from "@/components/ui/button";
 import { AppTabBar } from "@/components/app/AppTabBar";
 import { MobileMoreSheet } from "@/components/app/MobileMoreSheet";
+import { PlanBadge } from "@/components/kit/PlanBadge";
+import { GraceExpiredModal, AutoRenewSimulator } from "@/components/kit/GraceExpiredModal";
 
 const NAV = [
   { to: "/app", label: "Overview", icon: LayoutGrid },
@@ -243,10 +244,10 @@ export default function AppLayout() {
               <ExternalLink className="h-3.5 w-3.5" />
               <span className="kp-mono">kitpager.pro/{user?.slug}</span>
             </a>
+            <PlanBadge />
             <ThemeToggle />
           </div>
         </header>
-        <TrialBanner />
         <main
           data-scroll-root
           className={`flex-1 min-h-0 pb-16 sm:pb-0 ${inBuilder ? "overflow-hidden" : "overflow-y-auto"}`}
@@ -258,6 +259,8 @@ export default function AppLayout() {
       <LogoutModal open={logoutOpen} onClose={() => setLogoutOpen(false)} />
       <WelcomeModal />
       <HelpBubble />
+      <GraceExpiredModal />
+      <AutoRenewSimulator />
       <AppTabBar unreadInquiries={2} onMoreClick={() => setMoreOpen(true)} />
       <MobileMoreSheet
         open={moreOpen || hamburgerOpen}

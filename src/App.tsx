@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import "@/store/theme";
+import { useLocaleDetect } from "@/hooks/useLocaleDetect";
+import { LocaleAutoRedirect } from "@/components/app/LocaleAutoRedirect";
 
 import MarketingLayout from "@/layouts/MarketingLayout";
 import AuthLayout from "@/layouts/AuthLayout";
@@ -56,70 +58,96 @@ import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
 
+function AppRoutes() {
+  useLocaleDetect();
+  return (
+    <>
+      <ScrollToTop />
+      <UpgradeModalHost />
+      <LocaleAutoRedirect />
+      <Routes>
+        {/* Marketing — base */}
+        <Route element={<MarketingLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/templates" element={<Templates />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/changelog" element={<Changelog />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/security" element={<Security />} />
+          <Route path="/examples" element={<Examples />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/status" element={<Status />} />
+          <Route path="/legal/:slug" element={<LegalPage />} />
+        </Route>
+
+        {/* Marketing — locale-prefixed mirror */}
+        <Route path="/:locale" element={<MarketingLayout />}>
+          <Route index element={<Home />} />
+          <Route path="pricing" element={<Pricing />} />
+          <Route path="templates" element={<Templates />} />
+          <Route path="features" element={<Features />} />
+          <Route path="about" element={<About />} />
+          <Route path="how-it-works" element={<HowItWorks />} />
+          <Route path="security" element={<Security />} />
+          <Route path="examples" element={<Examples />} />
+          <Route path="resources" element={<Resources />} />
+          <Route path="status" element={<Status />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="changelog" element={<Changelog />} />
+        </Route>
+
+        {/* Auth */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+        </Route>
+        <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+
+        {/* App */}
+        <Route path="/app" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+          <Route index element={<AppOverview />} />
+          <Route path="builder" element={<Builder />} />
+          <Route path="platforms" element={<Platforms />} />
+          <Route path="testimonials" element={<Testimonials />} />
+          <Route path="inquiries" element={<Inquiries />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="rates" element={<Rates />} />
+          <Route path="settings" element={<Navigate to="/app/settings/profile" replace />} />
+          <Route path="settings/:section" element={<Settings />} />
+        </Route>
+
+        {/* Admin */}
+        <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
+          <Route index element={<AdminOverview />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="moderation" element={<AdminModeration />} />
+          <Route path="audit" element={<AdminAudit />} />
+          <Route path="system" element={<AdminSystem />} />
+        </Route>
+
+        {/* Public */}
+        <Route path="/review/:token" element={<ReviewSubmission />} />
+        <Route path="/share/:token" element={<PrivateShare />} />
+        <Route path="/:slug" element={<PublicKitPage />} />
+
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <ScrollToTop />
-        <UpgradeModalHost />
-        <Routes>
-          {/* Marketing */}
-          <Route element={<MarketingLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/templates" element={<Templates />} />
-            <Route path="/features" element={<Features />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/changelog" element={<Changelog />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/how-it-works" element={<HowItWorks />} />
-            <Route path="/security" element={<Security />} />
-            <Route path="/examples" element={<Examples />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/status" element={<Status />} />
-            <Route path="/legal/:slug" element={<LegalPage />} />
-          </Route>
-
-          {/* Auth */}
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-          </Route>
-          <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-
-          {/* App */}
-          <Route path="/app" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-            <Route index element={<AppOverview />} />
-            <Route path="builder" element={<Builder />} />
-            <Route path="platforms" element={<Platforms />} />
-            <Route path="testimonials" element={<Testimonials />} />
-            <Route path="inquiries" element={<Inquiries />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="rates" element={<Rates />} />
-            <Route path="settings" element={<Navigate to="/app/settings/profile" replace />} />
-            <Route path="settings/:section" element={<Settings />} />
-          </Route>
-
-          {/* Admin */}
-          <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
-            <Route index element={<AdminOverview />} />
-            <Route path="users" element={<AdminUsers />} />
-            <Route path="moderation" element={<AdminModeration />} />
-            <Route path="audit" element={<AdminAudit />} />
-            <Route path="system" element={<AdminSystem />} />
-          </Route>
-
-          {/* Public */}
-          <Route path="/review/:token" element={<ReviewSubmission />} />
-          <Route path="/share/:token" element={<PrivateShare />} />
-          <Route path="/:slug" element={<PublicKitPage />} />
-
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppRoutes />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
