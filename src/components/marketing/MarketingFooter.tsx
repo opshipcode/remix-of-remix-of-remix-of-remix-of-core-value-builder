@@ -65,7 +65,7 @@ export function MarketingFooter() {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex justify-center"
       >
-        <div className="kp-footer-signature whitespace-nowrap leading-none">
+        <div className="kp-footer-signature whitespace-nowrap leading-none translate-y-[35%]">
           kitpager
         </div>
       </div>
