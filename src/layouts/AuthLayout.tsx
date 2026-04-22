@@ -9,9 +9,9 @@ import { ImagePlaceholder } from "@/components/kit/ImagePlaceholder";
  */
 export default function AuthLayout() {
   return (
-    <div className="grid min-h-screen w-full bg-background lg:grid-cols-2">
+    <div className="grid h-[100dvh] w-full overflow-hidden bg-background lg:grid-cols-2">
       {/* Form panel */}
-      <div className="flex min-h-screen flex-col">
+      <div className="flex h-full flex-col overflow-y-auto">
         <header className="flex items-center justify-between p-6 md:p-8">
           <Link to="/" className="flex items-center gap-2">
             <Logo />
@@ -33,7 +33,7 @@ export default function AuthLayout() {
       </div>
 
       {/* Brand panel */}
-      <div className="relative hidden bg-hero p-10 lg:flex lg:items-center lg:justify-center">
+      <div className="relative hidden h-full overflow-y-auto bg-hero p-10 lg:flex lg:items-center lg:justify-center">
         <div className="w-full max-w-xl">
           <ImagePlaceholder
             aspect="portrait"
