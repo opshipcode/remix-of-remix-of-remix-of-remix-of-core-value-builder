@@ -23,6 +23,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Music2, Instagram, Youtube, Plus, Unlink, RefreshCw, ShieldCheck } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 
 const ICONS: Record<PlatformId, typeof Instagram> = {
@@ -57,6 +58,7 @@ export default function Platforms() {
   const [refreshingId, setRefreshingId] = useState<string | null>(null);
   const [confirmDisconnect, setConfirmDisconnect] = useState<ConnectedPlatform | null>(null);
   const [disconnecting, setDisconnecting] = useState(false);
+  const [flashId, setFlashId] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -107,6 +109,24 @@ export default function Platforms() {
       setRefreshingId(null);
       toast({ title: "Stats refreshed", description: `${p.platform} updated.` });
     }, 900);
+  };
+
+  const handleToggleVisible = (p: ConnectedPlatform) => {
+    setFlashId(p.id);
+    window.setTimeout(() => {
+      setData({
+        platforms: data.platforms.map((x) =>
+          x.id === p.id ? { ...x, visible: !x.visible } : x,
+        ),
+      });
+      const nowVisible = !p.visible;
+      toast({
+        title: nowVisible
+          ? `${p.platform[0].toUpperCase() + p.platform.slice(1)} now showing on your page`
+          : `${p.platform[0].toUpperCase() + p.platform.slice(1)} hidden from your page`,
+      });
+      window.setTimeout(() => setFlashId(null), 200);
+    }, 600);
   };
 
   return (
