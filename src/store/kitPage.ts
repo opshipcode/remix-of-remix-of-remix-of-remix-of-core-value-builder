@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type TemplateId = "minimal" | "bold" | "professional";
-export type PlatformId = "tiktok" | "instagram" | "facebook" | "youtube";
+export type PlatformId = "tiktok" | "instagram" | "youtube";
 
 export interface ConnectedPlatform {
   id: string;

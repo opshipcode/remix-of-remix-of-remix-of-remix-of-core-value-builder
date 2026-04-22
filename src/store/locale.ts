@@ -46,3 +46,9 @@ export const useLocaleStore = create<LocaleState>((set) => ({
 
 export const SUPPORTED_LOCALES = ["us", "ng", "gb", "ca", "au", "de", "fr", "in", "br", "za"] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+
+export const MARKETING_PATHS: ReadonlySet<string> = new Set([
+  "/", "/pricing", "/features", "/about", "/blog",
+  "/templates", "/how-it-works", "/security", "/examples",
+  "/resources", "/status", "/contact", "/changelog",
+]);
