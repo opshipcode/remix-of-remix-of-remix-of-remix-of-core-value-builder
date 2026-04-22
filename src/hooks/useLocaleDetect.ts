@@ -113,7 +113,7 @@ export function useLocaleDetect(): void {
         const exchangeRate = rates.rates?.[currency] ?? 1;
         const symbol = SYMBOL_MAP[currency] ?? "$";
         const routePrefix = (SUPPORTED_LOCALES as readonly string[]).includes(ccLower)
-          ? `/${ccLower}`
+          ? ccLower
           : "";
 
         const next: CachedLocale = {
