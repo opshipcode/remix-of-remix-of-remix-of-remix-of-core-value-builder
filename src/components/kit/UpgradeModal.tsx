@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, Sparkles, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -8,9 +8,13 @@ import {
 import { Button, type PlanLockTarget } from "@/components/ui/button";
 import { usePlanStore } from "@/store/plan";
 import { useLocaleStore } from "@/store/locale";
+import { useAuthStore } from "@/store/auth";
 import { formatPrice } from "@/lib/formatPrice";
 import { toast } from "@/hooks/use-toast";
-import { MockPaddleSheet } from "@/components/kit/MockPaddleSheet";
+import { openCheckout } from "@/lib/payment";
+import { PLAN_PRICES_USD, type PlanId } from "@/lib/payment-config";
+import { addBillingEntry } from "@/lib/billingHistory";
+import { useNotificationsStore } from "@/store/notifications";
 import { FoundingMemberCard } from "@/components/kit/FoundingMemberCard";
 
 interface UpgradeModalProps {
@@ -69,14 +73,12 @@ const PLANS: PlanCard[] = [
 
 export function UpgradeModal({ open, onClose, targetPlan, featureName }: UpgradeModalProps) {
   const navigate = useNavigate();
-  const setPlan = usePlanStore((s) => s.setPlan);
-  const setStatus = usePlanStore((s) => s.setStatus);
-  const startCreatorTrial = usePlanStore((s) => s.startCreatorTrial);
+  const activatePlan = usePlanStore((s) => s.activatePlan);
   const locale = useLocaleStore();
+  const user = useAuthStore((s) => s.user);
+  const addNotification = useNotificationsStore((s) => s.addNotification);
 
   const [cadence, setCadence] = useState<Cadence>("monthly");
-  const [paddleOpen, setPaddleOpen] = useState(false);
-  const [paddlePlan, setPaddlePlan] = useState<PlanCard>(PLANS[0]);
   const [loadingId, setLoadingId] = useState<"Creator" | "Pro" | null>(null);
 
   // Reset cadence when modal opens
@@ -86,30 +88,56 @@ export function UpgradeModal({ open, onClose, targetPlan, featureName }: Upgrade
 
   const handleSelect = (plan: PlanCard) => {
     setLoadingId(plan.id);
-    setPaddlePlan(plan);
-    window.setTimeout(() => {
-      setLoadingId(null);
-      setPaddleOpen(true);
-    }, 1200);
-  };
+    const planId: PlanId =
+      plan.id === "Creator"
+        ? cadence === "annual" ? "creator_annual" : "creator_monthly"
+        : cadence === "annual" ? "pro_annual" : "pro_monthly";
+    const usdMonthly = cadence === "annual" ? plan.annualMonthly : plan.monthly;
+    const usdTotal = cadence === "annual"
+      ? planId === "creator_annual"
+        ? PLAN_PRICES_USD.creator_annual * 12
+        : PLAN_PRICES_USD.pro_annual * 12
+      : usdMonthly;
 
-  const handlePaddleSuccess = () => {
-    if (paddlePlan.id === "Creator") {
-      startCreatorTrial(7);
-    } else {
-      setPlan("Pro");
-      setStatus("active");
-    }
-    setPaddleOpen(false);
-    onClose();
-    toast({
-      title: paddlePlan.id === "Creator" ? "Trial started" : "Welcome to Pro",
-      description:
-        paddlePlan.id === "Creator"
-          ? "Your 7-day Creator trial is active."
-          : "You're now on Pro.",
+    openCheckout({
+      amount: Math.round(usdTotal * locale.exchangeRate * 100) / 100,
+      currency: locale.currencyCode,
+      email: user?.email ?? "",
+      name: user?.displayName ?? "",
+      plan: planId,
+      onSuccess: () => {
+        setLoadingId(null);
+        activatePlan(planId);
+        addBillingEntry({
+          id: `inv_${Date.now()}`,
+          date: new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }),
+          description: `${plan.id} plan — ${cadence}`,
+          amount: usdTotal,
+          currency: "USD",
+          status: "paid",
+          type: "subscription",
+        });
+        addNotification({
+          type: "plan_created",
+          title: `You're on ${plan.id}`,
+          body: `Your ${plan.id} plan (${cadence}) is now active.`,
+          link: "/app/settings/billing",
+        });
+        toast({
+          title: plan.id === "Creator" ? "You're on Creator" : "You're on Pro",
+          description: "Your plan is now active.",
+        });
+        onClose();
+        navigate("/app");
+      },
+      onClose: () => {
+        setLoadingId(null);
+      },
     });
-    navigate("/app");
   };
 
   const isAnnual = cadence === "annual";
@@ -251,14 +279,6 @@ export function UpgradeModal({ open, onClose, targetPlan, featureName }: Upgrade
           </div>
         </DialogContent>
       </Dialog>
-
-      <MockPaddleSheet
-        open={paddleOpen}
-        onClose={() => setPaddleOpen(false)}
-        onSuccess={handlePaddleSuccess}
-        planLabel={paddlePlan.id}
-        priceUSD={isAnnual ? paddlePlan.annualMonthly : paddlePlan.monthly}
-      />
     </>
   );
 }
