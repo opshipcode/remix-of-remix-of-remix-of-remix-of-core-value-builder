@@ -114,44 +114,64 @@ export default function Builder() {
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      {/* Toolbar */}
-      <div className="flex h-12 shrink-0 items-center justify-between border-b border-border bg-background px-4 md:px-8">
-        <div className="kp-mono text-xs text-muted-foreground">
-          draft · template <span className="text-foreground">{TEMPLATE_META[data.template].label}</span> · auto-saved
+      {/* Toolbar — two rows on mobile, single row on md+ */}
+      <div className="flex shrink-0 flex-col gap-1.5 border-b border-border bg-background px-3 py-2 md:h-12 md:flex-row md:items-center md:justify-between md:gap-3 md:px-8 md:py-0">
+        {/* Row 1: identity + actions */}
+        <div className="flex items-center justify-between gap-2 md:flex-1 md:justify-start">
+          <p
+            className="kp-mono truncate text-[11px] text-muted-foreground md:text-xs"
+            title={`${data.slug} · ${TEMPLATE_META[data.template].label}`}
+          >
+            <span className="hidden sm:inline">draft · template </span>
+            <span className="text-foreground">
+              {TEMPLATE_META[data.template].label}
+            </span>
+            <span className="ml-1 hidden text-muted-foreground sm:inline">
+              · auto-saved
+            </span>
+            <span className="ml-1 inline-block h-1.5 w-1.5 translate-y-[-1px] rounded-full bg-success sm:hidden" />
+          </p>
+          <div className="flex items-center gap-2">
+            <Link
+              to={`/${data.slug}`}
+              target="_blank"
+              aria-label="Preview kit page"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1.5 text-xs hover:bg-surface-2 md:px-3"
+            >
+              <Eye className="h-3.5 w-3.5" />
+              <span className="hidden md:inline">Preview</span>
+              <ExternalLink className="hidden h-3 w-3 md:inline" />
+            </Link>
+            <Button
+              size="sm"
+              loaderClick
+              isLoading={publishing}
+              onClick={handlePublish}
+              className="rounded-full"
+            >
+              <Save className="h-3.5 w-3.5" /> Publish
+            </Button>
+          </div>
         </div>
-        <div className="kp-glass flex items-center gap-1 rounded-full p-1">
+
+        {/* Row 2 (mobile) / inline (md+): device switcher */}
+        <div className="kp-glass flex items-center gap-1 self-stretch rounded-full p-1 md:self-auto">
           {DEVICES.map((d) => (
             <button
               key={d.id}
               type="button"
               onClick={() => setDevice(d.id)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs transition ${
+              className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1 text-xs transition md:flex-none ${
                 device === d.id
                   ? "bg-foreground text-background"
                   : "text-muted-foreground hover:text-foreground"
               }`}
+              aria-label={d.label}
             >
-              <d.icon className="h-3.5 w-3.5" /> {d.label}
+              <d.icon className="h-3.5 w-3.5" />
+              <span className="hidden min-[360px]:inline">{d.label}</span>
             </button>
           ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            to={`/${data.slug}`}
-            target="_blank"
-            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs hover:bg-surface-2"
-          >
-            <Eye className="h-3.5 w-3.5" /> Preview <ExternalLink className="h-3 w-3" />
-          </Link>
-          <Button
-            size="sm"
-            loaderClick
-            isLoading={publishing}
-            onClick={handlePublish}
-            className="rounded-full"
-          >
-            <Save className="h-3.5 w-3.5" /> Publish
-          </Button>
         </div>
       </div>
 
