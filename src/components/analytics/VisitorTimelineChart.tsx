@@ -8,7 +8,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import { useTheme } from "@/store/theme";
+import { useThemeStore } from "@/store/theme";
 
 type RangeId = "24h" | "7d" | "30d" | "90d" | "custom";
 
@@ -160,7 +160,7 @@ function ChartTooltip({
 }
 
 export function VisitorTimelineChart() {
-  const theme = useTheme();
+  const theme = useThemeStore((s) => s.theme);
   const [range, setRange] = useState<RangeId>("7d");
   const [from, setFrom] = useState<string>(isoDaysAgo(14));
   const [to, setTo] = useState<string>(todayISO());
