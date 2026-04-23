@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { MockPaddleSheet } from "@/components/kit/MockPaddleSheet";
 import { validateSlugSync, checkSlugAvailability } from "@/lib/slugValidation";
 import { toast } from "@/hooks/use-toast";
+import { FOUNDING_PRICE_USD, decrementFoundingSpots } from "@/lib/foundingMember";
 
 const STEPS = [
   { id: 1, title: "Identity", desc: "Name and slug" },
@@ -22,7 +23,7 @@ const STEPS = [
 ];
 
 type ConnectedSet = Record<"tiktok" | "instagram" | "youtube", "idle" | "loading" | "connected">;
-type PlanChoice = "Free" | "Creator" | "Pro";
+type PlanChoice = "Free" | "Creator" | "Pro" | "Founding";
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -73,6 +74,17 @@ export default function Onboarding() {
     } else {
       setPaddleOpen(true);
     }
+  };
+
+  const paddlePrice = plan === "Pro" ? 29 : plan === "Founding" ? FOUNDING_PRICE_USD : 12;
+  const paddleLabel: "Creator" | "Pro" = plan === "Pro" ? "Pro" : "Creator";
+
+  const handlePaddleSuccess = () => {
+    if (plan === "Founding") {
+      decrementFoundingSpots();
+    }
+    setPaddleOpen(false);
+    handleFinish();
   };
 
   return (
@@ -171,9 +183,9 @@ export default function Onboarding() {
       <MockPaddleSheet
         open={paddleOpen}
         onClose={() => setPaddleOpen(false)}
-        onSuccess={() => { setPaddleOpen(false); handleFinish(); }}
-        planLabel={plan === "Pro" ? "Pro" : "Creator"}
-        priceUSD={plan === "Pro" ? 29 : 12}
+        onSuccess={handlePaddleSuccess}
+        planLabel={paddleLabel}
+        priceUSD={paddlePrice}
       />
     </div>
   );
