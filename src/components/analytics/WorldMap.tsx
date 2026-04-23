@@ -38,16 +38,16 @@ export function WorldMap({ data, height = 360, compact = false }: WorldMapProps)
     data: { views: d.views, name: d.name, flag: d.flag },
   }));
 
-  const mapFill = isDark ? "#1f2937" : "#e2e8f0";
-  const mapStroke = isDark ? "#374151" : "#cbd5e1";
+  const mapFill = isDark ? "#a172ff2e" : "#a172ff50";
+  const mapStroke = isDark ? "#A8DCAB" : "#a172ffb0";
 
   return (
     <div className="relative h-full w-full">
       <AtlasKit
         markers={markers}
         mapStyle={{ fill: mapFill, stroke: mapStroke, strokeWidth: 0.5 }}
-        defaultDotColor="#a5b4fc"
-        defaultDotSize={4}
+        defaultDotColor="#A8DCAB"
+        defaultDotSize={7}
         showTooltip={!compact}
         tooltip={{
           enabled: !compact,

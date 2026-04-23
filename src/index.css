@@ -183,7 +183,7 @@
 }
 
 @layer components {
-  .kp-container { @apply mx-auto w-full max-w-7xl px-6 md:px-10; }
+  .kp-container { @apply mx-auto w-full max-w-7xl px-6 md:px-10; background-color: transparent; }
   .kp-eyebrow {
     @apply inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface px-3 py-1 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground;
   }

@@ -54,22 +54,6 @@ export default function AppOverview() {
           <QuickAction to="/app/testimonials" icon={Star} title="Request a testimonial" desc="One-tap brand review link" />
         </div>
 
-        {/* Mini world map */}
-        <div className="kp-card overflow-hidden p-5 sm:p-6">
-          <div className="mb-3 flex items-baseline justify-between">
-            <div>
-              <h3 className="font-semibold">Page Visitors — Where they're from</h3>
-              <p className="text-xs text-muted-foreground">Live snapshot of your global audience.</p>
-            </div>
-            <Link to="/app/analytics" className="text-xs text-primary hover:underline">
-              View full analytics →
-            </Link>
-          </div>
-          <div className="h-[220px] sm:h-[260px]">
-            <WorldMap data={OVERVIEW_DATA} compact height="100%" />
-          </div>
-        </div>
-
         <div className="grid gap-4 md:grid-cols-2">
           <div className="kp-card p-6">
             <div className="flex items-center justify-between">
@@ -112,6 +96,23 @@ export default function AppOverview() {
             </ul>
           </div>
         </div>
+        
+        {/* Mini world map */}
+        <div className="kp-card overflow-hidden p-5 sm:p-6">
+          <div className="mb-3 flex items-baseline justify-between">
+            <div>
+              <h3 className="font-semibold">Page Visitors — Where they're from</h3>
+              <p className="text-xs text-muted-foreground">Live snapshot of your global audience.</p>
+            </div>
+            <Link to="/app/analytics" className="text-xs text-primary hover:underline">
+              View full analytics →
+            </Link>
+          </div>
+          <div className="h-[220px] sm:h-[260px]">
+            <WorldMap data={OVERVIEW_DATA} compact height="100%" />
+          </div>
+        </div>
+
       </div>
     </AppPage>
   );

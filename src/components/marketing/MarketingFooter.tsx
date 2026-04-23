@@ -60,18 +60,18 @@ const SOCIALS = [
 
 export function MarketingFooter() {
   return (
-    <div className="relative mt-32 overflow-x-clip">
+    <div className="relative mt-4 overflow-x-clip">
       {/* Watermark sits BEHIND the footer card. 80% above, 20% covered by the card. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 flex justify-center"
+        className="pointer-events-none inset-x-0 z-0 flex justify-center"
       >
         <div className="kp-footer-signature whitespace-nowrap leading-none translate-y-[35%]">
           kitpager
         </div>
       </div>
 
-      <footer className="relative z-10 mx-4 mb-4 rounded-3xl border border-border bg-card md:mx-6 md:mb-6">
+      <footer className="relative z-10 mx-4 mt-14 mb-4 rounded-3xl border border-border bg-card md:mx-6 md:mb-6">
         <div className="px-6 py-14 md:px-12 md:py-16">
           <div className="grid gap-12 md:grid-cols-[1.4fr_repeat(3,1fr)]">
             <div>

@@ -39,7 +39,7 @@ export function MarketingNavbar() {
   }, []);
 
   return (
-    <header className="sticky top-4 z-50 px-4">
+    <header className={`sticky ${scrolled ? "top-4" : "top-0"} z-50 px-4`}>
       <div className="kp-container">
         <div
           ref={ref}

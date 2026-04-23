@@ -14,12 +14,25 @@ const SYMBOL_MAP: Record<string, string> = {
   INR: "₹", BRL: "R$", ZAR: "R", JPY: "¥", KRW: "₩", MXN: "Mex$",
 };
 
-function localeForCountry(cc: string): string {
-  const map: Record<string, string> = {
-    US: "en-US", NG: "en-NG", GB: "en-GB", CA: "en-CA", AU: "en-AU",
-    DE: "de-DE", FR: "fr-FR", IN: "en-IN", BR: "pt-BR", ZA: "en-ZA",
-  };
-  return map[cc] ?? "en-US";
+  function localeForCountry(cc: string): string {
+    try {
+      return new Intl.Locale(`en-${cc}`).toString();
+    } catch {
+      return "en-US";
+    }
+  }
+  function getCurrencySymbol(currency: string, locale: string): string {
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency,
+      currencyDisplay: "narrowSymbol",
+    })
+      .formatToParts(1)
+      .find((p) => p.type === "currency")?.value ?? currency;
+  } catch {
+    return currency;
+  }
 }
 
 interface CachedLocale {
@@ -111,7 +124,8 @@ export function useLocaleDetect(): void {
         const ccLower = cc.toLowerCase() as SupportedLocale;
         const currency = (geo.currency ?? "USD").toUpperCase();
         const exchangeRate = rates.rates?.[currency] ?? 1;
-        const symbol = SYMBOL_MAP[currency] ?? "$";
+        const locale = localeForCountry(cc);
+        const symbol = getCurrencySymbol(currency, locale);
         const routePrefix = (SUPPORTED_LOCALES as readonly string[]).includes(ccLower)
           ? ccLower
           : "";
@@ -122,7 +136,7 @@ export function useLocaleDetect(): void {
           currencyCode: currency,
           currencySymbol: symbol,
           exchangeRate,
-          locale: localeForCountry(cc),
+          locale,
           routePrefix,
           forcedUSD: false,
           ts: Date.now(),
