@@ -14,6 +14,8 @@ import {
   ChevronLeft,
   Sparkles,
   Menu,
+  Lightbulb,
+  LifeBuoy,
 } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/kit/Logo";
@@ -28,6 +30,7 @@ import { AppTabBar } from "@/components/app/AppTabBar";
 import { MobileMoreSheet } from "@/components/app/MobileMoreSheet";
 import { PlanBadge } from "@/components/kit/PlanBadge";
 import { GraceExpiredModal, AutoRenewSimulator } from "@/components/kit/GraceExpiredModal";
+import { WelcomeTour } from "@/components/app/WelcomeTour";
 
 const NAV = [
   { to: "/app", label: "Overview", icon: LayoutGrid },
@@ -142,6 +145,32 @@ export default function AppLayout() {
                 {!collapsed && <span>{item.label}</span>}
               </NavLink>
             ))}
+            <NavLink
+              to="/app/suggest"
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
+                  isActive
+                    ? "bg-surface-offset text-foreground"
+                    : "text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+                }`
+              }
+            >
+              <Lightbulb className="h-4 w-4 shrink-0" />
+              {!collapsed && <span>Suggest a feature</span>}
+            </NavLink>
+            <NavLink
+              to="/app/support"
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition ${
+                  isActive
+                    ? "bg-surface-offset text-foreground"
+                    : "text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+                }`
+              }
+            >
+              <LifeBuoy className="h-4 w-4 shrink-0" />
+              {!collapsed && <span>Support</span>}
+            </NavLink>
           </div>
 
           {user?.isAdmin && (
@@ -258,6 +287,7 @@ export default function AppLayout() {
 
       <LogoutModal open={logoutOpen} onClose={() => setLogoutOpen(false)} />
       <WelcomeModal />
+      <WelcomeTour />
       <HelpBubble />
       <GraceExpiredModal />
       <AutoRenewSimulator />
