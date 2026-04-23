@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Check } from "lucide-react";
 import { useLocaleStore } from "@/store/locale";
 import { formatPrice } from "@/lib/formatPrice";
+import { FoundingMemberCard, FoundingMemberPopup } from "@/components/kit/FoundingMemberCard";
 
 type Cadence = "monthly" | "annual";
 
@@ -156,6 +157,11 @@ export default function Pricing() {
           ))}
         </div>
 
+        {/* Founding Member offer */}
+        <div className="mt-8">
+          <FoundingMemberCard />
+        </div>
+
         <div className="mt-10 text-center">
           {locale.detected && locale.currencyCode !== "USD" && (
             <p className="text-xs text-muted-foreground">
@@ -175,6 +181,8 @@ export default function Pricing() {
           </p>
         </div>
       </section>
+
+      <FoundingMemberPopup />
     </>
   );
 }

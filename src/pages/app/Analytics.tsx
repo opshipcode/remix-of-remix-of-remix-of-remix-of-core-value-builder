@@ -1,9 +1,20 @@
+import { useState } from "react";
 import { AppHeader, AppPage } from "@/components/app/AppPage";
 import { MOCK_ANALYTICS, formatNumber } from "@/lib/mockData";
 import { useAuthStore } from "@/store/auth";
-import { Lock, Sparkles } from "lucide-react";
+import { useKitPageStore } from "@/store/kitPage";
+import { Lock, Sparkles, Share2, Copy, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { WorldMap, CountriesList, type CountryData } from "@/components/analytics/WorldMap";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 const COUNTRY_DATA: CountryData[] = [
   { country: "US", views: 12400, flag: "🇺🇸", name: "United States" },
@@ -25,13 +36,73 @@ const COUNTRY_DATA: CountryData[] = [
 
 export default function Analytics() {
   const isPro = useAuthStore((s) => s.user?.plan === "pro" || s.user?.plan === "creator");
+  const slug = useKitPageStore((s) => s.data.slug);
+  const [shareUrl, setShareUrl] = useState<string>("");
+  const [shareOpen, setShareOpen] = useState(false);
+  const [generating, setGenerating] = useState(false);
+
+  const handleShare = () => {
+    setGenerating(true);
+    window.setTimeout(() => {
+      const id = Math.random().toString(36).slice(2, 8);
+      setShareUrl(`kitpager.co/${slug || "you"}/stats/${id}`);
+      setGenerating(false);
+      setShareOpen(true);
+    }, 800);
+  };
+
+  const handleCopy = () => {
+    try {
+      navigator.clipboard.writeText(shareUrl);
+      toast({ title: "Copied", description: "Stats report URL on your clipboard." });
+    } catch {
+      toast({ title: "Copy failed" });
+    }
+  };
 
   return (
     <AppPage>
       <AppHeader
         title="Analytics"
         description="Visitor activity for your KitPager page — refreshed every minute."
+        actions={
+          <Button
+            onClick={handleShare}
+            loaderClick
+            isLoading={generating}
+            variant="outline"
+            size="sm"
+            className="rounded-full"
+          >
+            <Share2 className="h-3.5 w-3.5" />
+            Share stats report
+          </Button>
+        }
       />
+
+      <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Your stats report is ready</DialogTitle>
+            <DialogDescription>
+              Send this link to a brand to share your live page performance.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-3 flex items-center justify-between rounded-xl border border-border bg-surface-2 px-4 py-3">
+            <span className="kp-mono truncate text-sm text-foreground">{shareUrl}</span>
+          </div>
+          <div className="mt-4 flex gap-2">
+            <Button onClick={handleCopy} variant="outline" className="flex-1 rounded-full">
+              <Copy className="h-3.5 w-3.5" /> Copy link
+            </Button>
+            <Button asChild className="flex-1 rounded-full">
+              <a href={`https://${shareUrl}`} target="_blank" rel="noreferrer">
+                <ExternalLink className="h-3.5 w-3.5" /> Open
+              </a>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         <Stat label="Views — 7d" value={formatNumber(MOCK_ANALYTICS.views7d)} delta="+12%" />
