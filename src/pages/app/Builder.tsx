@@ -24,6 +24,9 @@ import {
   Plus,
   Maximize2,
   Users,
+  ChevronLeft,
+  ChevronRight,
+  Pencil,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useKitPageStore, type TemplateId, type KitPageData } from "@/store/kitPage";
@@ -32,6 +35,7 @@ import { useEffectivePlan, planMeets } from "@/store/plan";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { AudiencePanel } from "@/components/audience/AudiencePanel";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 const DEVICES = [
   { id: "mobile", icon: Smartphone, label: "Mobile", w: 390, h: 844 },
@@ -71,6 +75,13 @@ export default function Builder() {
     const n = raw ? Number(raw) : 1;
     return Number.isFinite(n) && n >= 0.5 && n <= 1.5 ? n : 1;
   });
+  const [panelState, setPanelState] = useState<"open" | "collapsed">(() => {
+    if (typeof window === "undefined") return "open";
+    const raw = window.localStorage.getItem("kp_builder_panel");
+    return raw === "collapsed" ? "collapsed" : "open";
+  });
+  const [mobileSheet, setMobileSheet] = useState(false);
+
   useEffect(() => {
     try {
       window.localStorage.setItem("kp_builder_zoom", String(zoom));
@@ -78,6 +89,13 @@ export default function Builder() {
       // ignore
     }
   }, [zoom]);
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("kp_builder_panel", panelState);
+    } catch {
+      // ignore
+    }
+  }, [panelState]);
   const current = DEVICES.find((d) => d.id === device)!;
 
   const handlePublish = () => {
@@ -86,6 +104,11 @@ export default function Builder() {
       setPublishing(false);
       toast({ title: "Published", description: `Your kit page is live at /${data.slug}` });
     }, 1000);
+  };
+
+  const handleSectionClick = (id: string) => {
+    setOpen(id);
+    if (panelState === "collapsed") setPanelState("open");
   };
 
   return (
