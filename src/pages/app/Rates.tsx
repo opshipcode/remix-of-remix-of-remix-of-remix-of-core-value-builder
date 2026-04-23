@@ -72,8 +72,8 @@ export default function Rates() {
         description="Edit your deliverables. Toggle public to display prices, or keep them gated behind inquiry."
       />
 
-      <div className="kp-card mb-6 p-5">
-        <div className="flex items-center justify-between">
+      <div className="kp-card mb-6 p-4 sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold">Public rates</p>
             <p className="text-xs text-muted-foreground">
@@ -83,7 +83,7 @@ export default function Rates() {
           <Button
             variant={publicMode ? "default" : "outline"}
             onClick={() => setPublicMode((v) => !v)}
-            className="rounded-full"
+            className="w-full rounded-full sm:w-auto"
           >
             {publicMode ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
             {publicMode ? "Public" : "Private"}
@@ -91,7 +91,8 @@ export default function Rates() {
         </div>
       </div>
 
-      <div className="kp-card overflow-hidden">
+      {/* Desktop table */}
+      <div className="kp-card hidden overflow-hidden md:block">
         <div className="grid grid-cols-[1fr_1.5fr_1fr_2fr_auto] gap-3 border-b border-border bg-surface px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
           <span>Platform</span>
           <span>Deliverable</span>
@@ -129,6 +130,7 @@ export default function Rates() {
             <button
               onClick={() => remove(r.id)}
               className="rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+              aria-label="Remove deliverable"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -136,9 +138,72 @@ export default function Rates() {
         ))}
       </div>
 
+      {/* Mobile cards */}
+      <div className="space-y-3 md:hidden">
+        {rows.map((r) => (
+          <div
+            key={r.id}
+            className="rounded-2xl border border-border bg-card p-4"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <select
+                value={r.platform}
+                onChange={(e) => update(r.id, { platform: e.target.value as PlatformId })}
+                className="rounded-lg border border-border bg-background px-2 py-1.5 text-xs font-medium capitalize"
+              >
+                {PLATFORM_OPTS.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+              <button
+                onClick={() => remove(r.id)}
+                className="rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                aria-label="Remove deliverable"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="mt-3 space-y-2.5">
+              <div>
+                <label className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                  Deliverable
+                </label>
+                <input
+                  value={r.deliverable}
+                  onChange={(e) => update(r.id, { deliverable: e.target.value })}
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                  Price (USD)
+                </label>
+                <input
+                  type="number"
+                  value={r.priceUSD}
+                  onChange={(e) => update(r.id, { priceUSD: Number(e.target.value) || 0 })}
+                  className="kp-mono mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                  Notes
+                </label>
+                <input
+                  value={r.notes}
+                  onChange={(e) => update(r.id, { notes: e.target.value })}
+                  placeholder="Optional"
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-muted-foreground outline-none focus:border-primary"
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       <button
         onClick={add}
-        className="mt-4 inline-flex items-center gap-2 rounded-full border border-dashed border-border bg-surface px-4 py-2 text-sm hover:bg-surface-2"
+        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-dashed border-border bg-surface px-4 py-2.5 text-sm hover:bg-surface-2 sm:w-auto"
       >
         <Plus className="h-4 w-4" /> Add deliverable
       </button>
@@ -166,7 +231,7 @@ export default function Rates() {
             dirty ? "opacity-100" : "opacity-60"
           }`}
         >
-          <span className="text-xs text-muted-foreground">
+          <span className="hidden text-xs text-muted-foreground sm:inline">
             {dirty ? "You have unsaved changes" : "All changes saved"}
           </span>
           <Button
