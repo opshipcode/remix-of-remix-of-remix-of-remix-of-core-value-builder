@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { ImagePlaceholder } from "@/components/kit/ImagePlaceholder";
 import { useAuthStore } from "@/store/auth";
 import { SettingsSaveBar } from "@/components/kit/SettingsSaveBar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { usePageLoader } from "@/hooks/usePageLoader";
+import {
+  ProfilePhotoUploader,
+  ProfilePhotoCircle,
+} from "@/components/kit/ProfilePhotoUploader";
 
 export default function Profile() {
   const { loading } = usePageLoader(700);
@@ -63,20 +65,13 @@ export default function Profile() {
           <p className="mt-1 text-xs text-muted-foreground">
             Square, at least 512px. Shown circular on your kit page.
           </p>
-          <div className="mt-4">
-            <ImagePlaceholder
-              aspect="square"
-              title="Creator avatar"
-              dimensions="512x512"
-              orientation="square"
-              description="Square portrait of the creator, well-lit, soft background. Will be cropped circular."
-              background="any"
-              facesAllowed
-              usage="Profile photo (settings + public hero)"
-              format="png/jpg"
-            />
+          <div className="mt-5 flex flex-col items-center gap-4">
+            <ProfilePhotoCircle size={144} className="ring-2 ring-border" />
+            <ProfilePhotoUploader className="w-full" />
+            <p className="text-[11px] text-muted-foreground">
+              PNG, JPG, or WebP · max 5MB
+            </p>
           </div>
-          <Button variant="outline" className="mt-4 w-full">Upload photo</Button>
         </div>
 
         <div className="kp-card p-6">
