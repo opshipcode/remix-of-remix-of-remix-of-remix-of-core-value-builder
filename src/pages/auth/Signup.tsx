@@ -19,7 +19,7 @@ export default function Signup() {
       return;
     }
     const sync = validateSlugSync(claimSlug);
-    if (!sync.ok) {
+    if (sync.ok === false) {
       setSlugStatus("bad");
       setSlugMsg(sync.reason);
       return;
