@@ -413,40 +413,52 @@ interface PlanProps {
 }
 function StepPlan({ plan, setPlan }: PlanProps) {
   const locale = useLocaleStore();
-  const PLANS: { id: PlanChoice; price: number; tag?: string; features: string[] }[] = [
+  const PLANS: { id: PlanChoice; price: number; tag?: string; features: string[]; lifetime?: boolean }[] = [
     { id: "Free", price: 0, features: ["1 public page", "Basic template", "KitPager footer"] },
-    { id: "Creator", price: 12, tag: "Most popular", features: ["All 3 templates", "Verified stats", "Country restrictions", "7-day free trial"] },
-    { id: "Pro", price: 29, tag: "Best value", features: ["Everything in Creator", "Advanced analytics", "Viewed-by alerts", "Private shares"] },
+    { id: "Creator", price: 12, tag: "Recommended", features: ["All 3 templates", "Verified stats", "Country restrictions", "7-day free trial"] },
+    { id: "Pro", price: 29, features: ["Everything in Creator", "Advanced analytics", "Viewed-by alerts", "Private shares"] },
+    { id: "Founding", price: FOUNDING_PRICE_USD, tag: "Best value", lifetime: true, features: ["Lifetime Creator access", "One payment, no renewals", "Direct founder access", "Lock today's price forever"] },
   ];
 
   return (
     <div>
       <span className="kp-eyebrow">Step 5 of 5</span>
-      <h2 className="kp-display mt-3 text-2xl sm:text-3xl">One last thing.</h2>
+      <h2 className="kp-display mt-3 text-2xl sm:text-3xl">One more thing…</h2>
       <p className="mt-2 text-muted-foreground">Your first 7 days on any paid plan are free. Free needs no card.</p>
-      <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-3 md:gap-4">
+      <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-2 md:gap-4 lg:grid-cols-4">
         {PLANS.map((p) => {
           const selected = plan === p.id;
+          const isFounding = p.id === "Founding";
           return (
             <button
               key={p.id}
               type="button"
               onClick={() => setPlan(p.id)}
               className={`relative rounded-2xl border p-5 text-left transition ${
-                selected ? "border-primary shadow-glow" : "border-border hover:border-primary/40"
+                selected
+                  ? isFounding
+                    ? "border-amber-400 shadow-glow"
+                    : "border-primary shadow-glow"
+                  : isFounding
+                    ? "border-amber-400/40 bg-amber-400/5 hover:border-amber-400/70"
+                    : "border-border hover:border-primary/40"
               }`}
             >
               {p.tag && (
                 <span className={`absolute -top-2.5 left-4 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${
-                  p.id === "Pro" ? "bg-primary text-primary-foreground" : "bg-warning/20 text-warning-foreground"
+                  isFounding
+                    ? "bg-amber-500 text-background"
+                    : p.id === "Creator" ? "bg-primary text-primary-foreground" : "bg-warning/20 text-warning-foreground"
                 }`}>
                   {p.tag}
                 </span>
               )}
-              <p className="text-sm font-semibold">{p.id}</p>
+              <p className="text-sm font-semibold">{p.id === "Founding" ? "Founding Member" : p.id}</p>
               <p className="kp-display mt-2 text-3xl">
                 {p.price === 0 ? "Free" : formatPrice(p.price, locale)}
-                {p.price > 0 && <span className="text-sm text-muted-foreground">/mo</span>}
+                {p.price > 0 && (
+                  <span className="text-sm text-muted-foreground">{p.lifetime ? " once" : "/mo"}</span>
+                )}
               </p>
               <ul className="mt-3 space-y-1.5 text-xs text-muted-foreground">
                 {p.features.map((f) => (
