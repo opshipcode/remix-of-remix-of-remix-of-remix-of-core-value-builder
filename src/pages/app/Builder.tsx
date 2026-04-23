@@ -155,7 +155,11 @@ export default function Builder() {
       </div>
 
       {/* Main: canvas + right panel */}
-      <div className="grid h-full min-h-0 flex-1 grid-cols-1 lg:grid-cols-[1fr_400px]">
+      <div
+        className={`grid h-full min-h-0 flex-1 grid-cols-1 transition-[grid-template-columns] duration-200 ${
+          panelState === "open" ? "lg:grid-cols-[1fr_400px]" : "lg:grid-cols-[1fr_48px]"
+        }`}
+      >
         {/* Live preview canvas — never scrolls, device frame scales to fit */}
         <div className="relative min-h-0 overflow-hidden bg-surface-2">
           <div className="flex h-full w-full items-center justify-center p-4 md:p-6">
@@ -181,7 +185,8 @@ export default function Builder() {
             <button
               type="button"
               onClick={() => setZoom((z) => Math.max(0.5, Math.round((z - 0.1) * 10) / 10))}
-              className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+              disabled={zoom <= 0.5}
+              className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground hover:bg-surface-2 hover:text-foreground disabled:opacity-30"
               aria-label="Zoom out"
             >
               <Minus className="h-3.5 w-3.5" />
@@ -190,7 +195,8 @@ export default function Builder() {
             <button
               type="button"
               onClick={() => setZoom((z) => Math.min(1.5, Math.round((z + 0.1) * 10) / 10))}
-              className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+              disabled={zoom >= 1.5}
+              className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground hover:bg-surface-2 hover:text-foreground disabled:opacity-30"
               aria-label="Zoom in"
             >
               <Plus className="h-3.5 w-3.5" />
@@ -204,76 +210,162 @@ export default function Builder() {
               <Maximize2 className="h-3.5 w-3.5" />
             </button>
           </div>
+
+          {/* Mobile floating Edit button */}
+          <button
+            type="button"
+            onClick={() => setMobileSheet(true)}
+            className="absolute bottom-16 right-4 z-10 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-lg lg:hidden"
+            aria-label="Edit"
+          >
+            <Pencil className="h-4 w-4" /> Edit
+          </button>
         </div>
 
-        {/* Right editor panel */}
-        <aside className="flex min-h-0 flex-col border-l border-border bg-background">
-          <div className="shrink-0 border-b border-border p-4">
-            <h3 className="kp-display text-lg">Page editor</h3>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              Changes save instantly to your draft.
-            </p>
-          </div>
-          <div className="flex-1 overflow-y-auto p-3">
-            {SECTIONS.map((s) => (
-              <Section
-                key={s.id}
-                icon={s.icon}
-                label={s.label}
-                open={open === s.id}
-                onToggle={() => setOpen(open === s.id ? "" : s.id)}
-              >
-                {s.id === "template" && (
-                  <TemplatePicker current={data.template} plan={plan} onSelect={setTemplate} />
-                )}
-                {s.id === "identity" && <IdentitySection data={data} setData={setData} />}
-                {s.id === "tags" && <TagsSection data={data} setData={setData} />}
-                {s.id === "audience" && <AudiencePanel />}
-                {s.id === "about" && <AboutSection data={data} setData={setData} />}
-                {s.id === "platforms" && (
-                  <p className="text-xs text-muted-foreground">
-                    Manage in <Link to="/app/platforms" className="text-primary hover:underline">Platforms</Link>.
-                  </p>
-                )}
-                {s.id === "gallery" && (
-                  <p className="text-xs text-muted-foreground">
-                    {data.contentGallery.length} cards · drag-and-drop coming soon.
-                  </p>
-                )}
-                {s.id === "collabs" && (
-                  <p className="text-xs text-muted-foreground">{data.brandCollabs.length} brand collaborations added.</p>
-                )}
-                {s.id === "testimonials" && (
-                  <Link
-                    to="/app/testimonials"
-                    className="block rounded-lg bg-primary px-3 py-2 text-center text-xs font-medium text-primary-foreground hover:bg-primary-hover"
-                  >
-                    Manage testimonials
-                  </Link>
-                )}
-                {s.id === "rates" && (
-                  <Link
-                    to="/app/rates"
-                    className="block rounded-lg border border-border px-3 py-2 text-center text-xs hover:bg-surface-2"
-                  >
-                    Edit rate card →
-                  </Link>
-                )}
-                {s.id === "inquiry" && <InquirySection data={data} setData={setData} />}
-                {s.id === "page" && (
-                  <Link
-                    to="/app/settings/page"
-                    className="block text-center text-xs text-primary hover:underline"
-                  >
-                    Open page settings →
-                  </Link>
-                )}
-              </Section>
-            ))}
-          </div>
+        {/* Right editor panel — desktop, collapsible to 48px */}
+        <aside className="relative hidden min-h-0 border-l border-border bg-background lg:flex lg:flex-col">
+          {/* Collapse toggle */}
+          <button
+            type="button"
+            onClick={() => setPanelState(panelState === "open" ? "collapsed" : "open")}
+            aria-label={panelState === "open" ? "Collapse panel" : "Expand panel"}
+            className="absolute -left-3 top-4 z-10 grid h-6 w-6 place-items-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition hover:text-foreground"
+          >
+            {panelState === "open" ? (
+              <ChevronRight className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronLeft className="h-3.5 w-3.5" />
+            )}
+          </button>
+
+          {panelState === "open" ? (
+            <>
+              <div className="shrink-0 border-b border-border p-4">
+                <h3 className="kp-display text-lg">Page editor</h3>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Changes save instantly to your draft.
+                </p>
+              </div>
+              <div className="flex-1 overflow-y-auto p-3">
+                <EditorSections
+                  data={data}
+                  setData={setData}
+                  setTemplate={setTemplate}
+                  plan={plan}
+                  open={open}
+                  setOpen={setOpen}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center gap-1 overflow-y-auto py-3">
+              {SECTIONS.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => handleSectionClick(s.id)}
+                  aria-label={s.label}
+                  title={s.label}
+                  className="grid h-8 w-8 place-items-center rounded-lg text-muted-foreground transition hover:bg-surface-2 hover:text-foreground"
+                >
+                  <s.icon className="h-4 w-4" />
+                </button>
+              ))}
+            </div>
+          )}
         </aside>
       </div>
+
+      {/* Mobile editor sheet */}
+      <Sheet open={mobileSheet} onOpenChange={setMobileSheet}>
+        <SheetContent side="bottom" className="h-[85vh] overflow-y-auto rounded-t-3xl">
+          <SheetHeader className="text-left">
+            <SheetTitle>Page editor</SheetTitle>
+          </SheetHeader>
+          <div className="mt-4">
+            <EditorSections
+              data={data}
+              setData={setData}
+              setTemplate={setTemplate}
+              plan={plan}
+              open={open}
+              setOpen={setOpen}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
+  );
+}
+
+interface EditorSectionsProps {
+  data: KitPageData;
+  setData: (patch: Partial<KitPageData>) => void;
+  setTemplate: (t: TemplateId) => void;
+  plan: ReturnType<typeof useEffectivePlan>;
+  open: string;
+  setOpen: (v: string) => void;
+}
+
+function EditorSections({ data, setData, setTemplate, plan, open, setOpen }: EditorSectionsProps) {
+  return (
+    <>
+      {SECTIONS.map((s) => (
+        <Section
+          key={s.id}
+          icon={s.icon}
+          label={s.label}
+          open={open === s.id}
+          onToggle={() => setOpen(open === s.id ? "" : s.id)}
+        >
+          {s.id === "template" && (
+            <TemplatePicker current={data.template} plan={plan} onSelect={setTemplate} />
+          )}
+          {s.id === "identity" && <IdentitySection data={data} setData={setData} />}
+          {s.id === "tags" && <TagsSection data={data} setData={setData} />}
+          {s.id === "audience" && <AudiencePanel />}
+          {s.id === "about" && <AboutSection data={data} setData={setData} />}
+          {s.id === "platforms" && (
+            <p className="text-xs text-muted-foreground">
+              Manage in <Link to="/app/platforms" className="text-primary hover:underline">Platforms</Link>.
+            </p>
+          )}
+          {s.id === "gallery" && (
+            <p className="text-xs text-muted-foreground">
+              {data.contentGallery.length} cards · drag-and-drop coming soon.
+            </p>
+          )}
+          {s.id === "collabs" && (
+            <p className="text-xs text-muted-foreground">{data.brandCollabs.length} brand collaborations added.</p>
+          )}
+          {s.id === "testimonials" && (
+            <Link
+              to="/app/testimonials"
+              className="block rounded-lg bg-primary px-3 py-2 text-center text-xs font-medium text-primary-foreground hover:bg-primary-hover"
+            >
+              Manage testimonials
+            </Link>
+          )}
+          {s.id === "rates" && (
+            <Link
+              to="/app/rates"
+              className="block rounded-lg border border-border px-3 py-2 text-center text-xs hover:bg-surface-2"
+            >
+              Edit rate card →
+            </Link>
+          )}
+          {s.id === "inquiry" && <InquirySection data={data} setData={setData} />}
+          {s.id === "page" && (
+            <Link
+              to="/app/settings/page"
+              className="block text-center text-xs text-primary hover:underline"
+            >
+              Open page settings →
+            </Link>
+          )}
+        </Section>
+      ))}
+    </>
   );
 }
 
