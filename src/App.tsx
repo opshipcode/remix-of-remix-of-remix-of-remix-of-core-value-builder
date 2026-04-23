@@ -16,6 +16,7 @@ import { LocaleGate } from "@/layouts/LocaleGate";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { ScrollToTop } from "@/components/kit/ScrollToTop";
 import { UpgradeModalHost } from "@/components/kit/UpgradeModal";
+import { MockCheckoutHost } from "@/components/kit/MockCheckoutHost";
 
 import Home from "@/pages/marketing/Home";
 import Pricing from "@/pages/marketing/Pricing";
@@ -74,6 +75,7 @@ function AppRoutes() {
     <>
       <ScrollToTop />
       <UpgradeModalHost />
+      <MockCheckoutHost />
       <LocaleAutoRedirect />
       <Routes>
         {/* Marketing — base */}
