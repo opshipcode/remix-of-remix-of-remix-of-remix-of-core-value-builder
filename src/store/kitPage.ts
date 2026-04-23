@@ -76,6 +76,16 @@ export interface SeoSettings {
   ogImageUrl: string | null;
 }
 
+export type AgeRange = "18-24" | "25-34" | "35-44" | "45+";
+
+export interface AudienceSnapshot {
+  primaryAge: AgeRange | null;
+  genderSplit: { female: number; male: number; other: number };
+  topCountry: string | null;
+  secondaryCountry: string | null;
+  isVerified: boolean;
+}
+
 export interface KitPageData {
   slug: string;
   template: TemplateId;
@@ -97,6 +107,7 @@ export interface KitPageData {
   rates: RateCard;
   inquirySettings: InquirySettings;
   seo: SeoSettings;
+  audience: AudienceSnapshot;
   isActive: boolean;
   passwordProtect: boolean;
   passphrase: string;
@@ -255,6 +266,13 @@ const DEFAULT_DATA: KitPageData = {
       "Tech and lifestyle creator with verified reach across TikTok, Instagram and YouTube.",
     ogImageUrl: null,
   },
+  audience: {
+    primaryAge: null,
+    genderSplit: { female: 0, male: 0, other: 0 },
+    topCountry: null,
+    secondaryCountry: null,
+    isVerified: false,
+  },
   isActive: true,
   passwordProtect: false,
   passphrase: "",
@@ -264,8 +282,13 @@ const DEFAULT_DATA: KitPageData = {
 
 interface KitPageStore {
   data: KitPageData;
+  isDirty: boolean;
   setData: (patch: Partial<KitPageData>) => void;
+  setField: <K extends keyof KitPageData>(key: K, value: KitPageData[K]) => void;
   setTemplate: (template: TemplateId) => void;
+  setAudienceSnapshot: (snapshot: Partial<AudienceSnapshot>) => void;
+  setInquiryConfig: (config: Partial<InquirySettings>) => void;
+  markClean: () => void;
   reset: () => void;
 }
 
@@ -273,12 +296,33 @@ export const useKitPageStore = create<KitPageStore>()(
   persist(
     (set) => ({
       data: DEFAULT_DATA,
-      setData: (patch) => set((s) => ({ data: { ...s.data, ...patch } })),
+      isDirty: false,
+      setData: (patch) =>
+        set((s) => ({ data: { ...s.data, ...patch }, isDirty: true })),
+      setField: (key, value) =>
+        set((s) => ({ data: { ...s.data, [key]: value }, isDirty: true })),
       setTemplate: (template) =>
-        set((s) => ({ data: { ...s.data, template } })),
-      reset: () => set({ data: DEFAULT_DATA }),
+        set((s) => ({ data: { ...s.data, template }, isDirty: true })),
+      setAudienceSnapshot: (snapshot) =>
+        set((s) => ({
+          data: { ...s.data, audience: { ...s.data.audience, ...snapshot } },
+          isDirty: true,
+        })),
+      setInquiryConfig: (config) =>
+        set((s) => ({
+          data: {
+            ...s.data,
+            inquirySettings: { ...s.data.inquirySettings, ...config },
+          },
+          isDirty: true,
+        })),
+      markClean: () => set({ isDirty: false }),
+      reset: () => set({ data: DEFAULT_DATA, isDirty: false }),
     }),
-    { name: "kp_page_data" },
+    {
+      name: "kp_kit_page",
+      partialize: (s) => ({ data: s.data }),
+    },
   ),
 );
 
@@ -286,7 +330,7 @@ export function getKitPageBySlug(slug: string | undefined): KitPageData | null {
   if (!slug) return null;
   if (typeof window === "undefined") return null;
   try {
-    const raw = window.localStorage.getItem("kp_page_data");
+    const raw = window.localStorage.getItem("kp_kit_page");
     if (!raw) return null;
     const parsed = JSON.parse(raw) as { state?: { data?: KitPageData } };
     const data = parsed.state?.data;
