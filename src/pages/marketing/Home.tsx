@@ -1,8 +1,21 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Check, Eye, Zap, Shield, Sparkles, Star, BarChart3, Lock, MessageSquare } from "lucide-react";
 import { ImagePlaceholder } from "@/components/kit/ImagePlaceholder";
+import { useLocaleStore } from "@/store/locale";
+import { PRICING } from "@/lib/pricing";
 
 export default function Home() {
+  const { currencySymbol, exchangeRate, locale, currencyCode } = useLocaleStore();
+
+  const formatPrice = (usd: number) => {
+    const value = usd * exchangeRate;
+
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: currencyCode,
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
   return (
     <>
       {/* ============== HERO ============== */}
@@ -295,9 +308,22 @@ export default function Home() {
         </div>
         <div className="mt-12 grid gap-4 md:grid-cols-3">
           {[
-            { name: "Free", price: "$0", desc: "1 public page, basic template, KitPager footer." },
-            { name: "Creator", price: "$12", desc: "All templates, private rates, basic analytics, broken-link alerts.", highlight: true },
-            { name: "Pro", price: "$29", desc: "Advanced analytics, viewed-by alerts, expanded controls." },
+            {
+              name: "Free",
+              price: formatPrice(PRICING.FREE),
+              desc: "1 public page, basic template, KitPager footer.",
+            },
+            {
+              name: "Creator",
+              price: formatPrice(PRICING.CREATOR),
+              desc: "All templates, private rates, basic analytics, broken-link alerts.",
+              highlight: true,
+            },
+            {
+              name: "Pro",
+              price: formatPrice(PRICING.PRO),
+              desc: "Advanced analytics, viewed-by alerts, expanded controls.",
+            },
           ].map((p) => (
             <div
               key={p.name}
