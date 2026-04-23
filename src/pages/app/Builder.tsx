@@ -23,6 +23,7 @@ import {
   Minus,
   Plus,
   Maximize2,
+  Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useKitPageStore, type TemplateId, type KitPageData } from "@/store/kitPage";
@@ -30,6 +31,7 @@ import { TemplateRenderer, TEMPLATE_META } from "@/components/templates/Template
 import { useEffectivePlan, planMeets } from "@/store/plan";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { AudiencePanel } from "@/components/audience/AudiencePanel";
 
 const DEVICES = [
   { id: "mobile", icon: Smartphone, label: "Mobile", w: 390, h: 844 },
@@ -44,6 +46,7 @@ const SECTIONS = [
   { id: "identity", label: "Identity", icon: User },
   { id: "tags", label: "Niche tags", icon: Tag },
   { id: "platforms", label: "Platforms", icon: Link2 },
+  { id: "audience", label: "Audience", icon: Users },
   { id: "about", label: "About", icon: FileText },
   { id: "gallery", label: "Content gallery", icon: Film },
   { id: "collabs", label: "Brand collaborations", icon: Briefcase },
@@ -202,6 +205,7 @@ export default function Builder() {
                 )}
                 {s.id === "identity" && <IdentitySection data={data} setData={setData} />}
                 {s.id === "tags" && <TagsSection data={data} setData={setData} />}
+                {s.id === "audience" && <AudiencePanel />}
                 {s.id === "about" && <AboutSection data={data} setData={setData} />}
                 {s.id === "platforms" && (
                   <p className="text-xs text-muted-foreground">
