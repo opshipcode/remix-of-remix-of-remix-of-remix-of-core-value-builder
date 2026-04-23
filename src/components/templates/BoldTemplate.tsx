@@ -3,6 +3,7 @@ import { Mail, Send, Star, Verified, Play, Eye, Heart, Lock, ArrowRight, Sparkle
 import type { TemplateProps } from "./types";
 import { useLocaleStore } from "@/store/locale";
 import { formatPrice } from "@/lib/formatPrice";
+import { AudienceSection } from "@/components/audience/AudienceSection";
 
 function fmt(n: number) {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
@@ -92,6 +93,8 @@ export function BoldTemplate({ data }: TemplateProps) {
           </div>
         </section>
       )}
+
+      <AudienceSection audience={data.audience} variant="bold" />
 
       {/* ABOUT — large quote-style */}
       <section className="px-8 py-20 md:px-16">
