@@ -62,6 +62,8 @@ import ReviewSubmission from "@/pages/public/ReviewSubmission";
 import PrivateShare from "@/pages/public/PrivateShare";
 import CreatorReviewPage from "@/pages/public/CreatorReviewPage";
 import ReportPage from "@/pages/public/ReportPage";
+import SuggestFeature from "@/pages/SuggestFeature";
+import Support from "@/pages/Support";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -90,6 +92,8 @@ function AppRoutes() {
           <Route path="/resources" element={<Resources />} />
           <Route path="/status" element={<Status />} />
           <Route path="/legal/:slug" element={<LegalPage />} />
+          <Route path="/suggest" element={<SuggestFeature />} />
+          <Route path="/support" element={<Support />} />
         </Route>
 
         {/* Marketing — locale-prefixed mirror */}
@@ -134,6 +138,8 @@ function AppRoutes() {
           <Route path="templates/:templateId" element={<AppTemplatePreview />} />
           <Route path="settings" element={<Navigate to="/app/settings/profile" replace />} />
           <Route path="settings/:section" element={<Settings />} />
+          <Route path="suggest" element={<SuggestFeature />} />
+          <Route path="support" element={<Support />} />
         </Route>
 
         {/* Admin */}
