@@ -122,7 +122,6 @@ export function UpgradeModal({ open, onClose, targetPlan, featureName }: Upgrade
           <div className="flex items-start justify-between gap-3 border-b border-border bg-gradient-to-br from-primary/10 to-transparent px-6 py-5">
             <div>
               <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
-                <Sparkles className="h-3 w-3" />
                 Unlock KitPager
               </div>
               <h2 className="kp-display mt-2 text-2xl">

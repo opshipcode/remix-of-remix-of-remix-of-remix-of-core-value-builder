@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 import { ArrowRight, Check, Eye, Zap, Shield, Sparkles, Star, BarChart3, Lock, MessageSquare } from "lucide-react";
 import { ImagePlaceholder } from "@/components/kit/ImagePlaceholder";
 import { useLocaleStore } from "@/store/locale";
@@ -24,10 +25,10 @@ export default function Home() {
           <div className="mx-auto max-w-3xl text-center">
             <span className="kp-eyebrow">For serious creators</span>
             <h1 className="kp-display mt-6 text-5xl text-foreground md:text-7xl">
-              The media kit that <span className="text-primary">closes the deal.</span>
+              The media kit that gets you <span className="text-primary">brand deals.</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
-              Stop sending Canva PDFs. KitPager is a fast, polished, brand-converting page that pulls live proof from your real content — so brands trust you faster.
+              Stop sending Canva PDFs. Get a live media kit that lands brand deals.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link
@@ -45,7 +46,7 @@ export default function Home() {
               </Link>
             </div>
             <p className="mt-4 text-xs text-muted-foreground">
-              No credit card required. Free forever, with a published page in under 15 minutes.
+              No credit card required. Free forever, with a published page in under 5 minutes.
             </p>
           </div>
 

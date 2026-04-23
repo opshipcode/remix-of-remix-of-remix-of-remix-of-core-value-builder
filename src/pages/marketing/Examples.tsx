@@ -1,5 +1,6 @@
 import { PageHeader, CTAStrip } from "@/components/marketing/PageHeader";
 import { Link } from "react-router-dom";
+
 import { ArrowUpRight } from "lucide-react";
 
 const EXAMPLES = [

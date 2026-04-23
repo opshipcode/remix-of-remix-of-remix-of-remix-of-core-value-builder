@@ -8,7 +8,6 @@ import {
   BarChart3,
   DollarSign,
   Settings,
-  ShieldCheck,
   LogOut,
   ExternalLink,
   ChevronLeft,
@@ -16,6 +15,13 @@ import {
   Menu,
   Lightbulb,
   LifeBuoy,
+  FileSymlink,
+  User,
+  CreditCard,
+  ShieldCheck,
+  FileText,
+  Bell,
+  BookOpen,
 } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "@/components/kit/Logo";
@@ -40,15 +46,16 @@ const NAV = [
   { to: "/app/inquiries", label: "Inquiries", icon: Inbox },
   { to: "/app/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/app/rates", label: "Rates", icon: DollarSign },
+  { to: "/app/reports", label: "Reports", icon: FileSymlink },
 ];
 
 const SETTINGS = [
-  { to: "/app/settings/profile", label: "Profile" },
-  { to: "/app/settings/billing", label: "Billing" },
-  { to: "/app/settings/security", label: "Security" },
-  { to: "/app/settings/page", label: "Page" },
-  { to: "/app/settings/notifications", label: "Notifications" },
-  { to: "/app/settings/resources", label: "Resources" },
+  { to: "/app/settings/profile", label: "Profile", icon: User },
+  { to: "/app/settings/billing", label: "Billing", icon: CreditCard },
+  { to: "/app/settings/security", label: "Security", icon: ShieldCheck },
+  { to: "/app/settings/page", label: "Page", icon: FileText },
+  { to: "/app/settings/notifications", label: "Notifications", icon: Bell },
+  { to: "/app/settings/resources", label: "Resources", icon: BookOpen },
 ];
 
 export default function AppLayout() {
@@ -141,7 +148,7 @@ export default function AppLayout() {
                   }`
                 }
               >
-                <Settings className="h-4 w-4 shrink-0" />
+                <item.icon className="h-4 w-4 shrink-0" />
                 {!collapsed && <span>{item.label}</span>}
               </NavLink>
             ))}

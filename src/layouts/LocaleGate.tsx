@@ -1,18 +1,13 @@
-import { Outlet, useParams } from "react-router-dom";
-import { SUPPORTED_LOCALES } from "@/store/locale";
-import PublicKitPage from "@/pages/public/PublicKitPage";
+import { Outlet, useParams, Navigate } from "react-router-dom";
 
 export function LocaleGate(): JSX.Element {
   const { locale } = useParams<{ locale: string }>();
 
-  if (!locale) return <PublicKitPage />;
+  const isValid = !!locale && /^[a-z]{2}$/i.test(locale);
 
-  const isLocale = (SUPPORTED_LOCALES as readonly string[])
-    .includes(locale.toLowerCase());
+  if (!isValid) {
+    return <Navigate to="/" replace />;
+  }
 
-  // ✅ valid locale → continue to marketing routes
-  if (isLocale) return <Outlet />;
-
-  // ❌ not a locale → treat as slug
-  return <PublicKitPage />;
+  return <Outlet />;
 }

@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
+
 /**
  * Marketing page chrome — eyebrow, large headline, subhead. Used by docs-style pages
  * (how-it-works, security, examples, resources, status, legal).

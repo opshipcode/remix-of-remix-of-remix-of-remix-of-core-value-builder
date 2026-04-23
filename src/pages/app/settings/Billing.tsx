@@ -265,33 +265,39 @@ function TrialingCard({ cadence, setCadence, countdownLabel, msLeft, onSubscribe
       </div>
 
       <div className="mt-6 space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">Choose your plan</p>
-        <CadenceRadio
-          value="monthly"
-          selected={cadence === "monthly"}
-          onChange={() => setCadence("monthly")}
-          title="Monthly"
-          price={`${formatPrice(12, locale)}/mo`}
-        />
-        <CadenceRadio
-          value="annual"
-          selected={cadence === "annual"}
-          onChange={() => setCadence("annual")}
-          title="Annual"
-          price={`${formatPrice(99, locale)}/yr`}
-          strike={formatPrice(144, locale)}
-          savings={`Save ${formatPrice(45, locale)}`}
-        />
-      </div>
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          Choose your plan
+        </p>
 
-      <Button
-        size="lg"
-        className="mt-6 w-full rounded-full"
-        loaderClick
-        onClick={onSubscribe}
-      >
-        Subscribe & keep access
-      </Button>
+        <div className="flex gap-2">
+          <CadenceRadio
+            value="monthly"
+            selected={cadence === "monthly"}
+            onChange={() => setCadence("monthly")}
+            title="Monthly"
+            price={`${formatPrice(12, locale)}/mo`}
+          />
+          <CadenceRadio
+            value="annual"
+            selected={cadence === "annual"}
+            onChange={() => setCadence("annual")}
+            title="Annual"
+            price={`${formatPrice(99, locale)}/yr`}
+            strike={formatPrice(144, locale)}
+            savings={`Save ${formatPrice(45, locale)}`}
+          />
+        </div>
+      </div>
+      <div className="mt-6 flex justify-end">
+        <Button
+          size="lg"
+          className="rounded-full"
+          loaderClick
+          onClick={onSubscribe}
+        >
+          Subscribe & keep access
+        </Button>
+      </div>
     </div>
   );
 }

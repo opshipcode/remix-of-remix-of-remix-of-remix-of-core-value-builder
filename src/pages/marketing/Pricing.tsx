@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+
 import { Check } from "lucide-react";
 import { useLocaleStore } from "@/store/locale";
 import { formatPrice } from "@/lib/formatPrice";

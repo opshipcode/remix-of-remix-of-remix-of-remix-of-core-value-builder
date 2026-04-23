@@ -29,6 +29,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+
 import { useKitPageStore, type TemplateId, type KitPageData } from "@/store/kitPage";
 import { TemplateRenderer, TEMPLATE_META } from "@/components/templates/TemplateRenderer";
 import { useEffectivePlan, planMeets } from "@/store/plan";
@@ -46,17 +47,17 @@ const DEVICES = [
 type DeviceId = (typeof DEVICES)[number]["id"];
 
 const SECTIONS = [
-  { id: "template", label: "Template", icon: ImageIcon },
   { id: "identity", label: "Identity", icon: User },
   { id: "tags", label: "Niche tags", icon: Tag },
-  { id: "platforms", label: "Platforms", icon: Link2 },
   { id: "audience", label: "Audience", icon: Users },
-  { id: "about", label: "About", icon: FileText },
+  { id: "platforms", label: "Platforms", icon: Link2 },
   { id: "gallery", label: "Content gallery", icon: Film },
   { id: "collabs", label: "Brand collaborations", icon: Briefcase },
   { id: "testimonials", label: "Testimonials", icon: Star },
   { id: "rates", label: "Rates", icon: DollarSign },
   { id: "inquiry", label: "Inquiry form", icon: Inbox },
+  { id: "about", label: "About", icon: FileText },
+  { id: "template", label: "Template", icon: ImageIcon },
   { id: "page", label: "Page settings", icon: SettingsIcon },
 ] as const;
 
@@ -516,13 +517,81 @@ function IdentitySection({ data, setData }: { data: KitPageData; setData: (p: Pa
 }
 
 function TagsSection({ data, setData }: { data: KitPageData; setData: (p: Partial<KitPageData>) => void }) {
+  const [inputValue, setInputValue] = useState("");
+  const [tags, setTags] = useState<string[]>(data.nicheTags);
+
+  // Sync when data changes externally
+  useEffect(() => {
+    setTags(data.nicheTags);
+  }, [data.nicheTags]);
+
+  const addTag = (tag: string) => {
+    const trimmed = tag.trim();
+    if (trimmed && !tags.includes(trimmed)) {
+      const newTags = [...tags, trimmed];
+      setTags(newTags);
+      setData({ nicheTags: newTags });
+    }
+    setInputValue("");
+  };
+
+  const removeTag = (indexToRemove: number) => {
+    const newTags = tags.filter((_, index) => index !== indexToRemove);
+    setTags(newTags);
+    setData({ nicheTags: newTags });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addTag(inputValue);
+    } else if (e.key === "Backspace" && !inputValue && tags.length > 0) {
+      removeTag(tags.length - 1);
+    }
+  };
+
+  const handleBlur = () => {
+    if (inputValue.trim()) {
+      addTag(inputValue);
+    }
+  };
+
   return (
-    <Field
-      label="Niche tags"
-      value={data.nicheTags.join(", ")}
-      onChange={(v) => setData({ nicheTags: v.split(",").map((s) => s.trim()).filter(Boolean) })}
-      hint="Comma-separated"
-    />
+    <div>
+      <label className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+        Niche tags
+      </label>
+      <div className="mt-1 flex flex-wrap gap-1.5 rounded-lg border border-border bg-background p-2">
+        {tags.map((tag, index) => (
+          <span
+            key={index}
+            className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
+          >
+            {tag}
+            <button
+              type="button"
+              onClick={() => removeTag(index)}
+              className="ml-0.5 rounded-full p-0.5 hover:bg-primary/20"
+            >
+              <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </span>
+        ))}
+        <input
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onBlur={handleBlur}
+          placeholder={tags.length === 0 ? "Add tags..." : "Add more..."}
+          className="min-w-[80px] flex-1 bg-transparent px-1 py-1 text-sm outline-none placeholder:text-muted-foreground"
+        />
+      </div>
+      <p className="mt-1 text-[10px] text-muted-foreground">
+        Press Enter or comma to add a tag
+      </p>
+    </div>
   );
 }
 
@@ -573,6 +642,7 @@ function Field({
   hint,
   textarea,
   mono,
+  onBlur,
 }: {
   label: string;
   value: string;
@@ -580,6 +650,7 @@ function Field({
   hint?: string;
   textarea?: boolean;
   mono?: boolean;
+  onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }) {
   const cls = `mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 ${
     mono ? "kp-mono" : ""
@@ -588,9 +659,9 @@ function Field({
     <div>
       <label className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">{label}</label>
       {textarea ? (
-        <textarea rows={3} value={value} onChange={(e) => onChange(e.target.value)} className={cls} />
+        <textarea rows={3} value={value} onChange={(e) => onChange(e.target.value)} onBlur={onBlur} className={cls} />
       ) : (
-        <input value={value} onChange={(e) => onChange(e.target.value)} className={cls} />
+        <input value={value} onChange={(e) => onChange(e.target.value)} onBlur={onBlur} className={cls} />
       )}
       {hint && <p className="mt-1 text-[10px] text-muted-foreground">{hint}</p>}
     </div>

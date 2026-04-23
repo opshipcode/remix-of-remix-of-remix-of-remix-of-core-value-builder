@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 import { ArrowUpRight, Eye, Inbox, Star, Wand2 } from "lucide-react";
 import { useAuthStore } from "@/store/auth";
 import { MOCK_ANALYTICS, MOCK_INQUIRIES, formatNumber } from "@/lib/mockData";
@@ -96,7 +97,7 @@ export default function AppOverview() {
             </ul>
           </div>
         </div>
-        
+
         {/* Mini world map */}
         <div className="kp-card overflow-hidden p-5 sm:p-6">
           <div className="mb-3 flex items-baseline justify-between">

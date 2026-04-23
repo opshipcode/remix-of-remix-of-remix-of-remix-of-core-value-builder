@@ -97,9 +97,9 @@ function AppRoutes() {
         </Route>
 
         {/* Marketing — locale-prefixed mirror */}
-        <Route path="/:locale" element={<LocaleGate />}>
+        <Route path="/en/:locale" element={<LocaleGate />}>
           <Route element={<MarketingLayout />}>
-            <Route index element={<Home />} />
+            <Route path="" element={<Home />} />
             <Route path="pricing" element={<Pricing />} />
             <Route path="templates" element={<Templates />} />
             <Route path="templates/:templateId" element={<TemplatePreview />} />
