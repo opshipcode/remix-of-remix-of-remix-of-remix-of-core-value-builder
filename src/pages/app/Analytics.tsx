@@ -7,6 +7,7 @@ import { Lock, Sparkles, Share2, Copy, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { WorldMap, CountriesList, type CountryData } from "@/components/analytics/WorldMap";
+import { VisitorTimelineChart } from "@/components/analytics/VisitorTimelineChart";
 import {
   Dialog,
   DialogContent,
@@ -132,15 +133,8 @@ export default function Analytics() {
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-        <div className="kp-card relative p-6">
-          <h2 className="text-lg font-semibold">Visitor timeline</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Last 30 days</p>
-          <div className="mt-6 flex h-44 items-end gap-1">
-            {Array.from({ length: 30 }).map((_, i) => {
-              const h = 24 + Math.round(Math.sin(i / 2) * 28 + Math.random() * 30);
-              return <div key={i} className="flex-1 rounded-t bg-primary/70" style={{ height: `${h + 30}%` }} />;
-            })}
-          </div>
+        <div className="relative">
+          <VisitorTimelineChart />
           {!isPro && <BlurGate />}
         </div>
 

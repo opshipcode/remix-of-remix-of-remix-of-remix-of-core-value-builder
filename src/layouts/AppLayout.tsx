@@ -35,6 +35,7 @@ import type { PlanLockTarget } from "@/components/ui/button";
 import { AppTabBar } from "@/components/app/AppTabBar";
 import { MobileMoreSheet } from "@/components/app/MobileMoreSheet";
 import { PlanBadge } from "@/components/kit/PlanBadge";
+import { NotificationsBell } from "@/components/app/NotificationsBell";
 import { GraceExpiredModal, AutoRenewSimulator } from "@/components/kit/GraceExpiredModal";
 import { WelcomeTour } from "@/components/app/WelcomeTour";
 
@@ -270,6 +271,9 @@ export default function AppLayout() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <PlanBadge />
+            <ThemeToggle />
+            <NotificationsBell />
             <a
               id="kp-view-page"
               href={`/${user?.slug ?? ""}`}
@@ -280,8 +284,6 @@ export default function AppLayout() {
               <ExternalLink className="h-3.5 w-3.5" />
               <span className="kp-mono">kitpager.pro/{user?.slug}</span>
             </a>
-            <PlanBadge />
-            <ThemeToggle />
           </div>
         </header>
         <main
