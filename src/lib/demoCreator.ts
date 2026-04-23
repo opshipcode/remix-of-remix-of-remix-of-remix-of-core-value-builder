@@ -122,6 +122,13 @@ export function buildDemoCreator(template: TemplateId): KitPageData {
       showBudgetField: true,
     },
     seo: { title: "Alex Rivera — Demo Kit", description: "Demo creator kit page", ogImageUrl: null },
+    audience: {
+      primaryAge: "25-34",
+      genderSplit: { female: 58, male: 38, other: 4 },
+      topCountry: "NG",
+      secondaryCountry: "US",
+      isVerified: false,
+    },
     isActive: true,
     passwordProtect: false,
     passphrase: "",
