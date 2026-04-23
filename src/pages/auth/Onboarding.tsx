@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { MockPaddleSheet } from "@/components/kit/MockPaddleSheet";
 import { validateSlugSync, checkSlugAvailability } from "@/lib/slugValidation";
 import { toast } from "@/hooks/use-toast";
+import { FOUNDING_PRICE_USD, decrementFoundingSpots } from "@/lib/foundingMember";
 
 const STEPS = [
   { id: 1, title: "Identity", desc: "Name and slug" },
@@ -22,7 +23,7 @@ const STEPS = [
 ];
 
 type ConnectedSet = Record<"tiktok" | "instagram" | "youtube", "idle" | "loading" | "connected">;
-type PlanChoice = "Free" | "Creator" | "Pro";
+type PlanChoice = "Free" | "Creator" | "Pro" | "Founding";
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -73,6 +74,17 @@ export default function Onboarding() {
     } else {
       setPaddleOpen(true);
     }
+  };
+
+  const paddlePrice = plan === "Pro" ? 29 : plan === "Founding" ? FOUNDING_PRICE_USD : 12;
+  const paddleLabel: "Creator" | "Pro" = plan === "Pro" ? "Pro" : "Creator";
+
+  const handlePaddleSuccess = () => {
+    if (plan === "Founding") {
+      decrementFoundingSpots();
+    }
+    setPaddleOpen(false);
+    handleFinish();
   };
 
   return (
@@ -171,9 +183,9 @@ export default function Onboarding() {
       <MockPaddleSheet
         open={paddleOpen}
         onClose={() => setPaddleOpen(false)}
-        onSuccess={() => { setPaddleOpen(false); handleFinish(); }}
-        planLabel={plan === "Pro" ? "Pro" : "Creator"}
-        priceUSD={plan === "Pro" ? 29 : 12}
+        onSuccess={handlePaddleSuccess}
+        planLabel={paddleLabel}
+        priceUSD={paddlePrice}
       />
     </div>
   );
@@ -401,40 +413,52 @@ interface PlanProps {
 }
 function StepPlan({ plan, setPlan }: PlanProps) {
   const locale = useLocaleStore();
-  const PLANS: { id: PlanChoice; price: number; tag?: string; features: string[] }[] = [
+  const PLANS: { id: PlanChoice; price: number; tag?: string; features: string[]; lifetime?: boolean }[] = [
     { id: "Free", price: 0, features: ["1 public page", "Basic template", "KitPager footer"] },
-    { id: "Creator", price: 12, tag: "Most popular", features: ["All 3 templates", "Verified stats", "Country restrictions", "7-day free trial"] },
-    { id: "Pro", price: 29, tag: "Best value", features: ["Everything in Creator", "Advanced analytics", "Viewed-by alerts", "Private shares"] },
+    { id: "Creator", price: 12, tag: "Recommended", features: ["All 3 templates", "Verified stats", "Country restrictions", "7-day free trial"] },
+    { id: "Pro", price: 29, features: ["Everything in Creator", "Advanced analytics", "Viewed-by alerts", "Private shares"] },
+    { id: "Founding", price: FOUNDING_PRICE_USD, tag: "Best value", lifetime: true, features: ["Lifetime Creator access", "One payment, no renewals", "Direct founder access", "Lock today's price forever"] },
   ];
 
   return (
     <div>
       <span className="kp-eyebrow">Step 5 of 5</span>
-      <h2 className="kp-display mt-3 text-2xl sm:text-3xl">One last thing.</h2>
+      <h2 className="kp-display mt-3 text-2xl sm:text-3xl">One more thing…</h2>
       <p className="mt-2 text-muted-foreground">Your first 7 days on any paid plan are free. Free needs no card.</p>
-      <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-3 md:gap-4">
+      <div className="mt-6 grid gap-3 sm:mt-8 md:grid-cols-2 md:gap-4 lg:grid-cols-4">
         {PLANS.map((p) => {
           const selected = plan === p.id;
+          const isFounding = p.id === "Founding";
           return (
             <button
               key={p.id}
               type="button"
               onClick={() => setPlan(p.id)}
               className={`relative rounded-2xl border p-5 text-left transition ${
-                selected ? "border-primary shadow-glow" : "border-border hover:border-primary/40"
+                selected
+                  ? isFounding
+                    ? "border-amber-400 shadow-glow"
+                    : "border-primary shadow-glow"
+                  : isFounding
+                    ? "border-amber-400/40 bg-amber-400/5 hover:border-amber-400/70"
+                    : "border-border hover:border-primary/40"
               }`}
             >
               {p.tag && (
                 <span className={`absolute -top-2.5 left-4 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${
-                  p.id === "Pro" ? "bg-primary text-primary-foreground" : "bg-warning/20 text-warning-foreground"
+                  isFounding
+                    ? "bg-amber-500 text-background"
+                    : p.id === "Creator" ? "bg-primary text-primary-foreground" : "bg-warning/20 text-warning-foreground"
                 }`}>
                   {p.tag}
                 </span>
               )}
-              <p className="text-sm font-semibold">{p.id}</p>
+              <p className="text-sm font-semibold">{p.id === "Founding" ? "Founding Member" : p.id}</p>
               <p className="kp-display mt-2 text-3xl">
                 {p.price === 0 ? "Free" : formatPrice(p.price, locale)}
-                {p.price > 0 && <span className="text-sm text-muted-foreground">/mo</span>}
+                {p.price > 0 && (
+                  <span className="text-sm text-muted-foreground">{p.lifetime ? " once" : "/mo"}</span>
+                )}
               </p>
               <ul className="mt-3 space-y-1.5 text-xs text-muted-foreground">
                 {p.features.map((f) => (

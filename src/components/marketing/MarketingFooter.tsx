@@ -20,6 +20,7 @@ const COLS = [
       { to: "/resources", label: "Resources" },
       { to: "/security", label: "Security" },
       { to: "/about", label: "About" },
+      { to: "/support", label: "Support" },
     ],
   },
   {
