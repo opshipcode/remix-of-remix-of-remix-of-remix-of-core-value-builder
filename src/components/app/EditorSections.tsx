@@ -38,7 +38,7 @@ interface EditorSectionsProps {
 // The template still renders paid sections if the creator had data before
 // downgrading — gating only blocks editing in the editor UI.
 
-const PAID_ONLY_SECTIONS: string[] = ["rates", "collabs", "page", "testimonials", "inquiry", "theme"];
+const PAID_ONLY_SECTIONS: string[] = ["rates", "collabs", "page", "testimonials", "inquiry", "theme", "template"];
 
 function isPaidSection(
   sectionId: string,
@@ -481,14 +481,14 @@ const SECTIONS: {
   { id: "about", label: "About & Bio", icon: <FileText className="h-4 w-4" /> },
   { id: "audience", label: "Audience", icon: <Users className="h-4 w-4" />, sectionKey: "audience" },
   { id: "tags", label: "Niche Tags", icon: <Tag className="h-4 w-4" /> },
-  { id: "template", label: "Template", icon: <Palette className="h-4 w-4" /> },
-  { id: "theme", label: "Theme ✦ Pro", icon: <Palette className="h-4 w-4" /> },
   { id: "platforms", label: "Platforms", icon: <Link2 className="h-4 w-4" />, sectionKey: "platforms" },
   { id: "gallery", label: "Content Gallery", icon: <Film className="h-4 w-4" />, sectionKey: "gallery" },
   { id: "collabs", label: "Brand Collabs ✦ Pro", icon: <Briefcase className="h-4 w-4" />, sectionKey: "collabs" },
   { id: "testimonials", label: "Testimonials ✦ Pro", icon: <Star className="h-4 w-4" />, sectionKey: "testimonials" },
   { id: "rates", label: "Rates ✦ Pro", icon: <DollarSign className="h-4 w-4" />, sectionKey: "rates" },
   { id: "inquiry", label: "Work Together ✦ Pro", icon: <Inbox className="h-4 w-4" />, sectionKey: "inquiry" },
+  { id: "template", label: "Template ✦ Pro", icon: <Palette className="h-4 w-4" /> },
+  { id: "theme", label: "Theme ✦ Pro", icon: <Palette className="h-4 w-4" /> },
   { id: "page", label: "Page Settings ✦ Pro", icon: <Settings className="h-4 w-4" /> },
 ];
 
