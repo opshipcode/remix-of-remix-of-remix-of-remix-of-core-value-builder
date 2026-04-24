@@ -21,7 +21,7 @@ export default function Home() {
     <>
       {/* ============== HERO ============== */}
       <section className="relative overflow-hidden bg-hero">
-        <div className="kp-container pb-24 pt-16 md:pb-32 md:pt-24">
+        <div className="kp-container pb-24 pt-24 md:pb-32 md:pt-32">
           <div className="mx-auto max-w-3xl text-center">
             <span className="kp-eyebrow">For serious creators</span>
             <h1 className="kp-display mt-6 text-5xl text-foreground md:text-7xl">

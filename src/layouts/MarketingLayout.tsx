@@ -4,12 +4,14 @@ import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 
 export default function MarketingLayout() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <>
       <MarketingNavbar />
-      <main className="flex-1">
-        <Outlet />
-      </main>
-      <MarketingFooter />
-    </div>
+      <div className="flex min-h-screen flex-col bg-transparent">
+        <main className="flex-1 bg-background">
+          <Outlet />
+        </main>
+        <MarketingFooter />
+      </div>
+    </>
   );
 }

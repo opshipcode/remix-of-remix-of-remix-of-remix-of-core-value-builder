@@ -66,19 +66,90 @@ import ReportPage from "@/pages/public/ReportPage";
 import SuggestFeature from "@/pages/SuggestFeature";
 import Support from "@/pages/Support";
 import NotFound from "./pages/NotFound.tsx";
+import { RESERVED_PREFIXES } from "@/lib/reservedPrefixes";
 
 const queryClient = new QueryClient();
 
-function AppRoutes() {
+
+function AppRoutes(): JSX.Element {
   useLocaleDetect();
+
   return (
     <>
       <ScrollToTop />
       <UpgradeModalHost />
       <MockCheckoutHost />
       <LocaleAutoRedirect />
+
       <Routes>
-        {/* Marketing — base */}
+
+        {/* ================= SYSTEM ROUTES ================= */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+        </Route>
+
+        <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+
+        <Route path="/app" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+          <Route index element={<AppOverview />} />
+          <Route path="builder" element={<Builder />} />
+          <Route path="platforms" element={<Platforms />} />
+          <Route path="testimonials" element={<Testimonials />} />
+          <Route path="inquiries" element={<Inquiries />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="rates" element={<Rates />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="templates" element={<AppTemplates />} />
+          <Route path="templates/:templateId" element={<AppTemplatePreview />} />
+          <Route path="settings" element={<Navigate to="/app/settings/profile" replace />} />
+          <Route path="settings/:section" element={<Settings />} />
+          <Route path="suggest" element={<SuggestFeature />} />
+          <Route path="support" element={<Support />} />
+        </Route>
+
+        <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
+          <Route index element={<AdminOverview />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="users/:userId" element={<AdminUserDetail />} />
+          <Route path="moderation" element={<AdminModeration />} />
+          <Route path="audit" element={<AdminAudit />} />
+          <Route path="system" element={<AdminSystem />} />
+        </Route>
+
+        {/* ================= PUBLIC FIXED ROUTES ================= */}
+        <Route path="/review/:token" element={<ReviewSubmission />} />
+        <Route path="/share/:token" element={<PrivateShare />} />
+        <Route path="/watch/:period/:id" element={<ReportPage />} />
+
+        {/* ================= LOCALE ROUTES ================= */}
+        <Route path="/en/:country/*" element={<LocaleGate />}>
+          <Route element={<MarketingLayout />}>
+
+            <Route index element={<Home />} />
+            <Route path="pricing" element={<Pricing />} />
+            <Route path="templates" element={<Templates />} />
+            <Route path="templates/:templateId" element={<TemplatePreview />} />
+            <Route path="features" element={<Features />} />
+            <Route path="about" element={<About />} />
+            <Route path="how-it-works" element={<HowItWorks />} />
+            <Route path="security" element={<Security />} />
+            <Route path="examples" element={<Examples />} />
+            <Route path="resources" element={<Resources />} />
+            <Route path="status" element={<Status />} />
+            <Route path="contact" element={<Contact />} />
+            <Route path="changelog" element={<Changelog />} />
+            <Route path="legal/:slug" element={<LegalPage />} />
+            <Route path="suggest" element={<SuggestFeature />} />
+            <Route path="support" element={<Support />} />
+
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Route>
+
+        {/* ================= DEFAULT MARKETING ================= */}
         <Route element={<MarketingLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/pricing" element={<Pricing />} />
@@ -98,76 +169,17 @@ function AppRoutes() {
           <Route path="/support" element={<Support />} />
         </Route>
 
-        {/* Marketing — locale-prefixed mirror */}
-        <Route path="/en/:locale" element={<LocaleGate />}>
-          <Route element={<MarketingLayout />}>
-            <Route path="" element={<Home />} />
-            <Route path="pricing" element={<Pricing />} />
-            <Route path="templates" element={<Templates />} />
-            <Route path="templates/:templateId" element={<TemplatePreview />} />
-            <Route path="features" element={<Features />} />
-            <Route path="about" element={<About />} />
-            <Route path="how-it-works" element={<HowItWorks />} />
-            <Route path="security" element={<Security />} />
-            <Route path="examples" element={<Examples />} />
-            <Route path="resources" element={<Resources />} />
-            <Route path="status" element={<Status />} />
-            <Route path="contact" element={<Contact />} />
-            <Route path="changelog" element={<Changelog />} />
-          </Route>
-        </Route>
-
-        {/* Auth */}
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-        </Route>
-        <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
-
-        {/* App */}
-        <Route path="/app" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-          <Route index element={<AppOverview />} />
-          <Route path="builder" element={<Builder />} />
-          <Route path="platforms" element={<Platforms />} />
-          <Route path="testimonials" element={<Testimonials />} />
-          <Route path="inquiries" element={<Inquiries />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="rates" element={<Rates />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="templates" element={<AppTemplates />} />
-          <Route path="templates/:templateId" element={<AppTemplatePreview />} />
-          <Route path="settings" element={<Navigate to="/app/settings/profile" replace />} />
-          <Route path="settings/:section" element={<Settings />} />
-          <Route path="suggest" element={<SuggestFeature />} />
-          <Route path="support" element={<Support />} />
-        </Route>
-
-        {/* Admin */}
-        <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
-          <Route index element={<AdminOverview />} />
-          <Route path="users" element={<AdminUsers />} />
-          <Route path="users/:userId" element={<AdminUserDetail />} />
-          <Route path="moderation" element={<AdminModeration />} />
-          <Route path="audit" element={<AdminAudit />} />
-          <Route path="system" element={<AdminSystem />} />
-        </Route>
-
-        {/* Public — order matters: review and watch BEFORE LocaleGate */}
-        <Route path="/review/:token" element={<ReviewSubmission />} />
-        <Route path="/share/:token" element={<PrivateShare />} />
-        <Route path="/watch/:period/:id" element={<ReportPage />} />
-        <Route path="/:slug/review" element={<CreatorReviewPage />} />
-        {/* /:slug is handled by LocaleGate above when not a locale */}
+        {/* ================= SLUG FALLBACK (LAST ONLY) ================= */}
+        <Route path="/:slug" element={<PublicKitPage />} />
 
         <Route path="*" element={<NotFound />} />
+
       </Routes>
     </>
   );
 }
 
-const App = () => (
+const App = (): JSX.Element => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />

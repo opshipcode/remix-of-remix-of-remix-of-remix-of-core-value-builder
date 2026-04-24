@@ -30,7 +30,7 @@ export default function HowItWorks() {
     <>
       <PageHeader
         eyebrow="How it works"
-        title={<>From zero to brand-ready in fifteen minutes.</>}
+        title={<>From zero to brand-ready in five minutes.</>}
         subtitle="A short, structured walkthrough of the KitPager flow — from sign up to your first inquiry."
       />
 

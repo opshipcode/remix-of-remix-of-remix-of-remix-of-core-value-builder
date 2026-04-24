@@ -49,7 +49,7 @@ export function CTAStrip() {
               Ready to look the part?
             </h3>
             <p className="mt-2 max-w-xl text-primary-foreground/85">
-              Build a brand-ready kit page in fifteen minutes. Free forever, upgrade when you book.
+              Build a brand-ready kit page in five minutes. Free forever, upgrade when you book.
             </p>
           </div>
           <div className="flex gap-3">

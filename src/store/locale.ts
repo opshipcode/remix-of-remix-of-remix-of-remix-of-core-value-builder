@@ -10,6 +10,10 @@ export interface LocaleState {
   detected: boolean;
   routePrefix: string;
   forcedUSD: boolean;
+
+  // NEW: ensures router doesn't run early
+  hydrated: boolean;
+
   setLocale: (patch: Partial<LocaleState>) => void;
   resetToUSD: () => void;
 }
@@ -24,15 +28,21 @@ const DEFAULT: LocaleState = {
   detected: false,
   routePrefix: "",
   forcedUSD: false,
+
+  hydrated: false,
+
   setLocale: () => undefined,
   resetToUSD: () => undefined,
 };
 
 export const useLocaleStore = create<LocaleState>((set) => ({
   ...DEFAULT,
-  setLocale: (patch) => set((s) => ({ ...s, ...patch })),
+
+  setLocale: (patch: Partial<LocaleState>) =>
+    set((s: LocaleState): LocaleState => ({ ...s, ...patch })),
+
   resetToUSD: () =>
-    set((s) => ({
+    set((s: LocaleState): LocaleState => ({
       ...s,
       countryCode: "US",
       countryName: "United States",
@@ -44,12 +54,3 @@ export const useLocaleStore = create<LocaleState>((set) => ({
       routePrefix: "",
     })),
 }));
-
-export const SUPPORTED_LOCALES = ["us", "ng", "gb", "ca", "au", "de", "fr", "in", "br", "za"] as const;
-export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
-
-export const MARKETING_PATHS: ReadonlySet<string> = new Set([
-  "/", "/pricing", "/features", "/about", "/blog",
-  "/templates", "/how-it-works", "/security", "/examples",
-  "/resources", "/status", "/contact", "/changelog",
-]);

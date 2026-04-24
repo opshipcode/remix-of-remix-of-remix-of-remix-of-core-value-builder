@@ -48,7 +48,7 @@ export default function AuthLayout() {
           />
           <div className="mt-8">
             <p className="kp-display text-2xl text-foreground md:text-3xl">
-              Brand-ready in fifteen minutes.
+              Brand-ready in five minutes.
             </p>
             <p className="mt-3 text-sm text-muted-foreground">
               Live proof, verified metrics, and tasteful design — built for serious creators.

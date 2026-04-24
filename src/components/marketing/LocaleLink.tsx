@@ -3,31 +3,31 @@ import { useLocaleStore } from "@/store/locale";
 
 export function LocaleLink({ to, ...props }: LinkProps) {
   const routePrefix = useLocaleStore((s) => s.routePrefix);
-  const location = useLocation();
-
+  
   if (typeof to !== "string") {
     return <Link to={to} {...props} />;
   }
 
-  // already localized
-  if (to.startsWith("/en/")) {
+  // Already localized or no locale - don't modify
+  if (to.startsWith("/en/") || !routePrefix) {
     return <Link to={to} {...props} />;
   }
 
-  // external or hash
-  if (to.startsWith("http") || to.startsWith("#")) {
+  // External, hash, or system routes - don't modify
+  if (
+    to.startsWith("http") || 
+    to.startsWith("#") ||
+    to.startsWith("/app") ||
+    to.startsWith("/admin") ||
+    to.startsWith("/login") ||
+    to.startsWith("/signup")
+  ) {
     return <Link to={to} {...props} />;
   }
 
-  // no locale yet
-  if (!routePrefix) {
-    return <Link to={to} {...props} />;
-  }
-
-  const next =
-    to === "/"
-      ? `/en/${routePrefix}`
-      : `/en/${routePrefix}${to}`;
+  const next = to === "/" 
+    ? `/en/${routePrefix}` 
+    : `/en/${routePrefix}${to}`;
 
   return <Link to={next} {...props} />;
 }

@@ -78,7 +78,7 @@ export function MarketingFooter() {
             <div>
               <Logo size="lg" />
               <p className="mt-4 max-w-xs text-sm text-muted-foreground">
-                The premium media kit page for serious creators. Live proof, verified metrics, brand-ready in fifteen minutes.
+                The premium media kit page for serious creators. Live proof, verified metrics, brand-ready in five minutes.
               </p>
               <div className="mt-5 flex items-center gap-3">
                 {SOCIALS.map((s) => (

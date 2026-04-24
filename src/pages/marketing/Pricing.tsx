@@ -88,29 +88,85 @@ const PLANS: PlanDef[] = [
   },
 ];
 
+// Store the original detected locale so we can toggle back
+let originalDetectedLocale: {
+  countryCode: string;
+  countryName: string;
+  currencyCode: string;
+  currencySymbol: string;
+  exchangeRate: number;
+  locale: string;
+  routePrefix: string;
+} | null = null;
+
 export default function Pricing() {
   const [cadence, setCadence] = useState<Cadence>("monthly");
   const locale = useLocaleStore();
   const setLocale = useLocaleStore((s) => s.setLocale);
   const isAnnual = cadence === "annual";
+  
+  // Check if we're currently showing in the user's local currency or USD
+  const isShowingLocalCurrency = locale.detected && locale.currencyCode !== "USD" && !locale.forcedUSD;
 
-  const handleSwitchUSD = () => {
+  const handleToggleCurrency = () => {
     try {
-      window.sessionStorage.setItem("kp_locale_override", "USD");
+      // If we're showing local currency, switch to USD
+      if (isShowingLocalCurrency) {
+        // Save the current locale before switching to USD
+        originalDetectedLocale = {
+          countryCode: locale.countryCode,
+          countryName: locale.countryName,
+          currencyCode: locale.currencyCode,
+          currencySymbol: locale.currencySymbol,
+          exchangeRate: locale.exchangeRate,
+          locale: locale.locale,
+          routePrefix: locale.routePrefix,
+        };
+        
+        window.sessionStorage.setItem("kp_locale_override", "USD");
+        setLocale({
+          countryCode: "US",
+          countryName: "United States",
+          currencyCode: "USD",
+          currencySymbol: "$",
+          exchangeRate: 1,
+          locale: "en-US",
+          forcedUSD: true,
+          routePrefix: "",
+        });
+      } 
+      // If we're showing USD (forced), switch back to local currency
+      else if (locale.forcedUSD && originalDetectedLocale) {
+        window.sessionStorage.removeItem("kp_locale_override");
+        setLocale({
+          ...originalDetectedLocale,
+          forcedUSD: false,
+        });
+      }
     } catch {
       /* ignore */
     }
-    setLocale({
-      countryCode: "US",
-      countryName: "United States",
-      currencyCode: "USD",
-      currencySymbol: "$",
-      exchangeRate: 1,
-      locale: "en-US",
-      forcedUSD: true,
-      routePrefix: "",
-    });
   };
+
+  // Save the detected locale when it's first detected
+  if (locale.detected && locale.currencyCode !== "USD" && !originalDetectedLocale) {
+    originalDetectedLocale = {
+      countryCode: locale.countryCode,
+      countryName: locale.countryName,
+      currencyCode: locale.currencyCode,
+      currencySymbol: locale.currencySymbol,
+      exchangeRate: locale.exchangeRate,
+      locale: locale.locale,
+      routePrefix: locale.routePrefix,
+    };
+  }
+
+  // Determine what to show in the toggle button
+  const showCurrencyToggle = (locale.detected && locale.currencyCode !== "USD") || locale.forcedUSD;
+  
+  const toggleLabel = locale.forcedUSD && originalDetectedLocale 
+    ? `Switch to ${originalDetectedLocale.currencyCode} · ${originalDetectedLocale.countryCode}`
+    : `Switch to USD`;
 
   return (
     <>
@@ -152,7 +208,7 @@ export default function Pricing() {
       </section>
 
       <section className="kp-container -mt-10 pb-16 sm:pb-24">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-3">
           {PLANS.map((p) => (
             <PlanCard key={p.name} plan={p} cadence={cadence} />
           ))}
@@ -164,20 +220,24 @@ export default function Pricing() {
         </div>
 
         <div className="mt-10 text-center">
-          {locale.detected && locale.currencyCode !== "USD" && (
+          {/* Currency toggle - always visible when detected locale is non-USD or USD is forced */}
+          {showCurrencyToggle && (
             <p className="text-xs text-muted-foreground">
-              Showing prices in {locale.currencyCode} · {locale.countryCode}
+              {locale.forcedUSD 
+                ? "Showing prices in USD" 
+                : `Showing prices in ${locale.currencyCode} · ${locale.countryCode}`
+              }
               {" · "}
               <button
                 type="button"
-                onClick={handleSwitchUSD}
+                onClick={handleToggleCurrency}
                 className="underline hover:text-foreground"
               >
-                Switch to USD
+                {toggleLabel}
               </button>
             </p>
           )}
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className={`text-xs text-muted-foreground ${showCurrencyToggle ? 'mt-2' : ''}`}>
             Cancel anytime. All prices via secure Paddle checkout.
           </p>
         </div>
@@ -227,14 +287,16 @@ function PlanCard({ plan, cadence }: PlanCardProps) {
         key={`${cadence}-${locale.currencyCode}`}
         className="mt-4 animate-in fade-in duration-200"
       >
-        <p className="kp-display flex items-baseline gap-2 text-4xl sm:text-5xl">
+        <p className="kp-display flex flex-col items-baseline gap-[-1] text-3xl sm:text-4xl">
           {!isFree && strike > 0 && !isAnnual && (
             <span className="text-base text-muted-foreground/60 line-through">
               {formatPrice(strike, locale)}
             </span>
           )}
-          <span>{priceDisplay}</span>
-          <span className="text-base text-muted-foreground">{cadenceLabel}</span>
+          <div className="flex items-baseline gap-2">
+            <span>{priceDisplay}</span>
+            <span className="text-base text-muted-foreground">{cadenceLabel}</span>
+          </div>
         </p>
         {annualSubline && (
           <p className="mt-1 text-xs text-muted-foreground">

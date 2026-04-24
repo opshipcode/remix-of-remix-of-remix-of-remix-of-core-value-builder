@@ -41,6 +41,8 @@ import {
   Youtube,
   Lock,
   Globe,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 import type { PlatformId } from "@/store/kitPage";
 
@@ -66,6 +68,7 @@ export default function Reports() {
   const plan = useEffectivePlan();
   const [reports, setReports] = useState<CampaignReport[]>([]);
   const [open, setOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -111,12 +114,43 @@ export default function Reports() {
     </Button>
   );
 
+  // Moved viewToggle inside the component scope as a JSX element, not a function
+  const viewToggle = (
+    <div className="flex items-center gap-1 rounded-full border border-border bg-surface p-1">
+      <button
+        onClick={() => setViewMode("grid")}
+        className={`grid h-8 w-8 place-items-center rounded-full transition-colors ${
+          viewMode === "grid" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+        }`}
+        aria-label="Grid view"
+      >
+        <LayoutGrid className="h-4 w-4" />
+      </button>
+      <button
+        onClick={() => setViewMode("list")}
+        className={`grid h-8 w-8 place-items-center rounded-full transition-colors ${
+          viewMode === "list" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+        }`}
+        aria-label="List view"
+      >
+        <List className="h-4 w-4" />
+      </button>
+    </div>
+  );
+
+  const headerActions = (
+    <div className="flex items-center gap-3">
+      {viewToggle}
+      {newButton}
+    </div>
+  );
+
   return (
     <AppPage>
       <AppHeader
         title="Reports"
         description="Share live campaign performance with brands. Stats update automatically."
-        actions={newButton}
+        actions={headerActions}
       />
 
       {reports.length === 0 ? (
@@ -127,7 +161,11 @@ export default function Reports() {
           </Button>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className={`gap-4 ${
+          viewMode === "grid" 
+            ? "grid grid-cols-1 sm:grid-cols-2" 
+            : "flex flex-col"
+        }`}>
           {reports.map((r) => (
             <ReportCard
               key={r.id}
@@ -185,6 +223,7 @@ export default function Reports() {
   );
 }
 
+// Rest of the code (ReportCard, NewReportForm) remains exactly the same
 function ReportCard({
   report,
   refreshRateBadge,
