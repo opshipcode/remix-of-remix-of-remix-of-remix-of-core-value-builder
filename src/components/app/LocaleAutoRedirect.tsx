@@ -7,6 +7,36 @@ type PathString = string;
 
 const LOCALE_SESSION_KEY = "kp_locale_active";
 
+// Helper to determine if a path is a slug-based route (user-generated content)
+function isSlugRoute(pathname: string): boolean {
+  const segments = pathname.split("/").filter(Boolean);
+  
+  // Must have at least 1 segment to be a slug route
+  if (segments.length === 0) return false;
+  
+  const firstSegment = segments[0].toLowerCase();
+  
+  // Known system/marketing first segments that are NOT slugs
+  const knownFirstSegments = [
+    "app", "admin", "login", "signup", "forgot-password", 
+    "reset-password", "onboarding", "review", "share", "watch",
+    "en" // Locale prefix
+  ];
+  
+  if (knownFirstSegments.includes(firstSegment)) return false;
+  
+  // Check if first segment matches any known marketing route
+  const isKnownMarketing = LOCALIZED_ROUTES.has(`/${firstSegment}`) || 
+                           Array.from(LOCALIZED_ROUTES).some(route => 
+                             route === `/${firstSegment}` || route.startsWith(`/${firstSegment}/`)
+                           );
+  
+  if (isKnownMarketing) return false;
+  
+  // If we get here, it's likely a user-generated slug
+  return true;
+}
+
 export function LocaleAutoRedirect(): null {
   const location: Location = useLocation();
   const navigate = useNavigate();
@@ -38,15 +68,6 @@ export function LocaleAutoRedirect(): null {
       return;
     }
 
-    // Check if this is a marketing path that should be localized on initial load
-    const pathWithoutParams: PathString = currentPath.split("?")[0] ?? currentPath;
-    const segments: string[] = currentPath.split("/").filter(Boolean);
-
-    const isMarketingPath: boolean = Array.from(LOCALIZED_ROUTES).some(
-      (route: string) =>
-        pathWithoutParams === route || pathWithoutParams.startsWith(`${route}/`)
-    );
-
     // System routes - never localize
     if (
       currentPath.startsWith("/app") ||
@@ -64,9 +85,17 @@ export function LocaleAutoRedirect(): null {
     }
 
     // Slug routes - never localize
-    if (segments.length === 1 && !isMarketingPath) {
+    if (isSlugRoute(currentPath)) {
       return;
     }
+
+    // Check if this is a marketing path that should be localized on initial load
+    const pathWithoutParams: PathString = currentPath.split("?")[0] ?? currentPath;
+
+    const isMarketingPath: boolean = Array.from(LOCALIZED_ROUTES).some(
+      (route: string) =>
+        pathWithoutParams === route || pathWithoutParams.startsWith(`${route}/`)
+    );
 
     // Not a marketing path - don't localize
     if (!isMarketingPath) return;
@@ -127,19 +156,18 @@ export function LocaleAutoRedirect(): null {
       return;
     }
 
+    // Slug routes - never localize
+    if (isSlugRoute(currentPath)) {
+      return;
+    }
+
     // Check if marketing path
     const pathWithoutParams: PathString = currentPath.split("?")[0] ?? currentPath;
-    const segments: string[] = currentPath.split("/").filter(Boolean);
 
     const isMarketingPath: boolean = Array.from(LOCALIZED_ROUTES).some(
       (route: string) =>
         pathWithoutParams === route || pathWithoutParams.startsWith(`${route}/`)
     );
-
-    // Slug routes - don't localize
-    if (segments.length === 1 && !isMarketingPath) {
-      return;
-    }
 
     // Not marketing - don't localize
     if (!isMarketingPath) return;

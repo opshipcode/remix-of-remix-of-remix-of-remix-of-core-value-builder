@@ -18,7 +18,7 @@ export function PageHeader({
   align?: "center" | "left";
 }) {
   return (
-    <header className={`pt-16 md:pt-24 ${align === "center" ? "text-center" : ""}`}>
+    <header className={`pt-16 mt-6 md:pt-24 ${align === "center" ? "text-center" : ""}`}>
       <div className="kp-container">
         {eyebrow && (
           <span className="kp-eyebrow mx-auto inline-flex">{eyebrow}</span>

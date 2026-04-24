@@ -17,7 +17,7 @@ export function Logo({
   return (
     <span
       className={`${brandClass} inline-flex items-baseline ${sizes[size]} leading-none ${className}`}
-      aria-label="KitPager"
+      aria-label="kitpager"
     >
       <span className="text-foreground">kit</span>
       <span className={variant === "mono" ? "text-foreground" : "text-primary"}>pager</span>

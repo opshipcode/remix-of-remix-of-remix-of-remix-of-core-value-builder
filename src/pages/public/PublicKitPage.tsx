@@ -1,14 +1,54 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { Logo } from "@/components/kit/Logo";
 import { TemplateRenderer } from "@/components/templates/TemplateRenderer";
 import { getKitPageBySlug, type KitPageData } from "@/store/kitPage";
 import { Skeleton } from "@/components/ui/skeleton";
 import { isSlugRegistered } from "@/lib/registeredSlugs";
 import { SlugNotFound } from "@/components/public/SlugNotFound";
+import ReviewSubmission from "@/pages/public/ReviewSubmission";
+import PrivateShare from "@/pages/public/PrivateShare";
+import ReportPage from "@/pages/public/ReportPage";
+import Brand from "@/components/marketing/Brand";
 
 export default function PublicKitPage() {
-  const { slug } = useParams();
+  const { slug, "*": restPath } = useParams();
+  const location = useLocation();
+  
+  // Parse the sub-path
+  const segments = restPath ? restPath.split('/').filter(Boolean) : [];
+  const [subRoute, ...subParams] = segments;
+
+  // Handle specific sub-routes
+  if (subRoute === 'review') {
+    // For /:slug/review
+    return <ReviewSubmission />;
+  }
+
+  if (subRoute === 'share' && subParams[0]) {
+    // For /:slug/share/:token
+    return <PrivateShare />;
+  }
+
+  if (subRoute === 'watch' && subParams.length >= 2) {
+    // For /:slug/watch/:period/:id
+    return <ReportPage />;
+  }
+
+  // Handle any other sub-routes or the main slug page
+  if (subRoute) {
+    // If there's a sub-route we don't recognize, show 404 or handle accordingly
+    console.log(`Unknown sub-route: ${subRoute}`, subParams);
+    // You might want to return a 404 component here
+    // return <NotFound />;
+  }
+
+  // Original main slug page logic
+  return <MainKitPage slug={slug || ""} />;
+}
+
+// Extracted main kit page logic
+function MainKitPage({ slug }: { slug: string }) {
   const [data, setData] = useState<KitPageData | null | undefined>(undefined);
 
   useEffect(() => {
@@ -29,11 +69,33 @@ export default function PublicKitPage() {
     return () => window.clearTimeout(t);
   }, [slug]);
 
+  console.log(data);
+
   if (data === undefined) return <KitPageSkeleton />;
-  if (!data) return <SlugNotFound slug={slug ?? ""} />;
+  if (!data) return <SlugNotFound slug={slug} />;
   if (!data.isActive) return <InactiveKit name={data.displayName} />;
 
-  return <TemplateRenderer data={data} />;
+return (
+  <>
+    <TemplateRenderer data={data} />
+
+    <footer className="fixed bottom-6 right-0 -translate-x-1/2 z-20 
+      max-w-2xl 
+      px-8 py-4 text-center
+      rounded-full
+      backdrop-blur-md bg-black/50 
+      border border-white/20
+      shadow-lg">
+
+      <p className="text-[13px] flex items-center justify-center tracking-widest text-white/80">
+        Created with 
+        <Brand className="pl-2 text-[11px] lowercase" />
+        <span className="text-[10px] ml-1 font-bold text-white lowercase">.pro</span>
+      </p>
+
+    </footer>
+  </>
+);
 }
 
 function KitPageSkeleton() {

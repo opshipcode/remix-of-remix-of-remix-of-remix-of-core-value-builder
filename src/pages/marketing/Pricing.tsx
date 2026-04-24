@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { Check } from "lucide-react";
@@ -105,6 +105,24 @@ export default function Pricing() {
   const setLocale = useLocaleStore((s) => s.setLocale);
   const isAnnual = cadence === "annual";
   
+  // On component mount/reload, reset to original currency
+  useEffect(() => {
+    // Clear the USD override from session storage
+    try {
+      window.sessionStorage.removeItem("kp_locale_override");
+    } catch {
+      /* ignore */
+    }
+    
+    // Reset forcedUSD flag if it was set
+    if (locale.forcedUSD && originalDetectedLocale) {
+      setLocale({
+        ...originalDetectedLocale,
+        forcedUSD: false,
+      });
+    }
+  }, []); // Empty dependency array means this runs once on mount
+  
   // Check if we're currently showing in the user's local currency or USD
   const isShowingLocalCurrency = locale.detected && locale.currencyCode !== "USD" && !locale.forcedUSD;
 
@@ -149,7 +167,7 @@ export default function Pricing() {
   };
 
   // Save the detected locale when it's first detected
-  if (locale.detected && locale.currencyCode !== "USD" && !originalDetectedLocale) {
+  if (locale.detected && locale.currencyCode !== "USD" && !originalDetectedLocale && !locale.forcedUSD) {
     originalDetectedLocale = {
       countryCode: locale.countryCode,
       countryName: locale.countryName,
@@ -161,8 +179,8 @@ export default function Pricing() {
     };
   }
 
-  // Determine what to show in the toggle button
-  const showCurrencyToggle = (locale.detected && locale.currencyCode !== "USD") || locale.forcedUSD;
+  // Determine if we should show the currency toggle
+  const showCurrencyToggle = (locale.detected && locale.currencyCode !== "USD" && !locale.forcedUSD) || (locale.forcedUSD && originalDetectedLocale);
   
   const toggleLabel = locale.forcedUSD && originalDetectedLocale 
     ? `Switch to ${originalDetectedLocale.currencyCode} · ${originalDetectedLocale.countryCode}`
@@ -208,7 +226,7 @@ export default function Pricing() {
       </section>
 
       <section className="kp-container -mt-10 pb-16 sm:pb-24">
-        <div className="grid gap-8 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3">
           {PLANS.map((p) => (
             <PlanCard key={p.name} plan={p} cadence={cadence} />
           ))}
@@ -220,7 +238,7 @@ export default function Pricing() {
         </div>
 
         <div className="mt-10 text-center">
-          {/* Currency toggle - always visible when detected locale is non-USD or USD is forced */}
+          {/* Currency toggle - only shows when user's currency is different from USD */}
           {showCurrencyToggle && (
             <p className="text-xs text-muted-foreground">
               {locale.forcedUSD 
@@ -287,15 +305,15 @@ function PlanCard({ plan, cadence }: PlanCardProps) {
         key={`${cadence}-${locale.currencyCode}`}
         className="mt-4 animate-in fade-in duration-200"
       >
-        <p className="kp-display flex flex-col items-baseline gap-[-1] text-3xl sm:text-4xl">
+        <p className="kp-display flex flex-col items-baseline gap-0 text-6xl sm:text-4xl">
           {!isFree && strike > 0 && !isAnnual && (
             <span className="text-base text-muted-foreground/60 line-through">
               {formatPrice(strike, locale)}
             </span>
           )}
-          <div className="flex items-baseline gap-2">
-            <span>{priceDisplay}</span>
-            <span className="text-base text-muted-foreground">{cadenceLabel}</span>
+          <div>
+          <span>{priceDisplay}</span>
+          <span className="text-base text-muted-foreground">{cadenceLabel}</span>
           </div>
         </p>
         {annualSubline && (

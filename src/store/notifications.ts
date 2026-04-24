@@ -82,6 +82,42 @@ function getSeed(): Notification[] {
       read: true,
       link: "/app/settings/billing",
     },
+    {
+      id: genId(),
+      type: "new_inquiry",
+      title: "New inquiry from Glossier",
+      body: "We'd love to discuss a Q3 launch with your audience.",
+      createdAt: new Date(now - 12 * minute).toISOString(),
+      read: false,
+      link: "/app/inquiries",
+    },
+    {
+      id: genId(),
+      type: "new_testimonial",
+      title: "New testimonial from Notion",
+      body: "Maya from Notion left you a 5-star review awaiting approval.",
+      createdAt: new Date(now - 3 * hour).toISOString(),
+      read: false,
+      link: "/app/testimonials",
+    },
+    {
+      id: genId(),
+      type: "trial_ending",
+      title: "Trial ends in 2 days",
+      body: "Add a payment method to keep Creator features after your trial.",
+      createdAt: new Date(now - 1 * day).toISOString(),
+      read: false,
+      link: "/app/settings/billing",
+    },
+    {
+      id: genId(),
+      type: "subscription_renewed",
+      title: "Renewal successful",
+      body: "Your Creator plan renewed for another month.",
+      createdAt: new Date(now - 5 * day).toISOString(),
+      read: true,
+      link: "/app/settings/billing",
+    },
   ];
 }
 

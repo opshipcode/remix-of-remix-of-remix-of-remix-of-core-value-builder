@@ -70,6 +70,10 @@ import { RESERVED_PREFIXES } from "@/lib/reservedPrefixes";
 
 const queryClient = new QueryClient();
 
+// Helper component to handle slug-based routing
+function SlugRouter(): JSX.Element {
+  return <PublicKitPage />;
+}
 
 function AppRoutes(): JSX.Element {
   useLocaleDetect();
@@ -170,7 +174,9 @@ function AppRoutes(): JSX.Element {
         </Route>
 
         {/* ================= SLUG FALLBACK (LAST ONLY) ================= */}
-        <Route path="/:slug" element={<PublicKitPage />} />
+        <Route path="/:slug" element={<SlugRouter />}>
+          <Route path="*" element={<SlugRouter />} />
+        </Route>
 
         <Route path="*" element={<NotFound />} />
 

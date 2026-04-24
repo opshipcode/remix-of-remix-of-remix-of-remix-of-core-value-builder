@@ -17,18 +17,18 @@ export default function ReviewSubmission() {
         </div>
       </header>
 
-      <main className="kp-container max-w-2xl py-16">
+      <main className="kp-container max-w-2xl py-0">
         {submitted ? (
-          <div className="kp-card p-10 text-center">
+          <div className="kp-card p-10 mt-20 text-center">
             <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-success/15 text-success">
               <CheckCircle2 className="h-6 w-6" />
             </span>
             <h1 className="kp-display mt-5 text-3xl">Thank you</h1>
-            <p className="mt-2 text-sm text-muted-foreground">Your testimonial has been submitted. The creator will review it shortly.</p>
+            <p className="mt-2 text-sm text-muted-foreground">Your testimonial has been submitted. Thank you!</p>
           </div>
         ) : (
-          <>
-            <p className="kp-eyebrow inline-flex">Brand testimonial</p>
+          <div className="mt-[-15px]">
+            <p className="kp-eyebrow inline-flex">testimonial</p>
             <h1 className="kp-display mt-5 text-4xl">Share your experience working with Alex Rivera</h1>
             <p className="mt-3 text-muted-foreground">
               Your testimonial will appear on the creator's KitPager page after they approve it. Verified via secure token.
@@ -90,7 +90,7 @@ export default function ReviewSubmission() {
                 Submit testimonial
               </button>
             </form>
-          </>
+          </div>
         )}
       </main>
     </div>
